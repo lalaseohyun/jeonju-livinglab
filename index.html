@@ -838,16 +838,16 @@
     <div class="q-page active" data-step="0">
       <div class="intro-card">
         <div class="intro-emoji">🎬</div>
-        <div class="intro-title">전주 영화의 거리 리빙랩</div>
-        <div class="intro-sub">만족도 조사</div>
+        <div class="intro-title">전주 영화의 거리 활성화를 위한<br> 아이디어 제안소</div>
+        <div class="intro-sub">만족도 조사</div><br>
         <div class="intro-desc">
-          안녕하세요! 부스에 와주셔서 감사합니다.<br>
-          여러분의 의견이 <strong>영화의 거리</strong>를 더 좋은 곳으로 만드는 데 큰 힘이 됩니다.<br><br>
+          여러분의 의견 한 마디가<br>
+          <strong>전주 영화의 거리</strong>를 <br> 활성화 하는 데 <br> 큰 도움이 됩니다.<br><br>
           총 <strong>5개의 짧은 질문</strong>이 있어요.<br>
-          편하게 답변해주세요!
+          솔직하고 편하게 답변해주세요!
         </div>
-        <button class="submit-btn" id="start-btn">시작하기</button>
-        <div class="intro-meta">⏱️ 약 2~3분 소요</div>
+        <button class="submit-btn" id="start-btn">응답 시작하기</button>
+        <div class="intro-meta">⏱️ 약 2~3분 소요!</div>
       </div>
     </div>
 
@@ -1091,10 +1091,10 @@ function initRespond() {
   const state = { step: 0, division: null, reason: '', idea: '', satisfaction: 0, comment: '' };
   const TOTAL_Q = 5; // Q1~Q5
 
-  // 분과 카드 렌더 (랜덤 순서로 — 순서 편향 방지)
-  const shuffled = [...DIVISIONS].sort(() => Math.random() - 0.5);
+  // 분과 카드 렌더 (1~5 분과 번호 순서대로)
+  const ordered = [...DIVISIONS].sort((a, b) => a.num - b.num);
   const list = document.getElementById('division-list');
-  shuffled.forEach(d => {
+  ordered.forEach(d => {
     const card = document.createElement('div');
     card.className = 'division-card';
     card.dataset.code = d.code;
