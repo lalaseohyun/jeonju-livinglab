@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- saved from url=(0058)file:///C:/Users/%EB%9D%BC%EB%9D%BC/Downloads/index_1.html -->
+<!-- saved from url=(0058)file:///C:/Users/%EB%9D%BC%EB%9D%BC/Downloads/index_2.html -->
 <html lang="ko"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -725,9 +725,9 @@
   <div class="select-card">
     <h1>🎬 전주 영화의 거리 리빙랩</h1>
     <p>만족도 조사 시스템 — 사용할 모드를 선택해주세요</p>
-    <a href="file:///C:/Users/%EB%9D%BC%EB%9D%BC/Downloads/index_1.html?mode=respond">📝 응답 화면<small>참여자 — 태블릿/스마트폰에 띄우기</small></a>
-    <a href="file:///C:/Users/%EB%9D%BC%EB%9D%BC/Downloads/index_1.html?mode=display">📊 결과 화면<small>실시간 결과 — 부스 모니터에 띄우기</small></a>
-    <a href="file:///C:/Users/%EB%9D%BC%EB%9D%BC/Downloads/index_1.html?mode=admin">⚙️ 관리자 화면<small>CSV 다운로드, 응답 관리</small></a>
+    <a href="file:///C:/Users/%EB%9D%BC%EB%9D%BC/Downloads/index_2.html?mode=respond">📝 응답 화면<small>참여자 — 태블릿/스마트폰에 띄우기</small></a>
+    <a href="file:///C:/Users/%EB%9D%BC%EB%9D%BC/Downloads/index_2.html?mode=display">📊 결과 화면<small>실시간 결과 — 부스 모니터에 띄우기</small></a>
+    <a href="file:///C:/Users/%EB%9D%BC%EB%9D%BC/Downloads/index_2.html?mode=admin">⚙️ 관리자 화면<small>CSV 다운로드, 응답 관리</small></a>
   </div>
 </section>
 
@@ -889,17 +889,28 @@ const DIVISIONS = [
    ============================================================ */
 let db;
 let firebaseReady = false;
-try {
-  if (FIREBASE_CONFIG.apiKey !== "YOUR_API_KEY") {
-    firebase.initializeApp(FIREBASE_CONFIG);
-    db = firebase.database();
-    firebaseReady = true;
-  } else {
-    console.warn('⚠️ Firebase 설정이 비어있습니다. FIREBASE_CONFIG를 채워주세요.');
+function initFirebase() {
+  try {
+    if (typeof firebase === 'undefined') {
+      console.error('Firebase SDK가 로드되지 않았습니다.');
+      return false;
+    }
+    if (FIREBASE_CONFIG.apiKey !== "YOUR_API_KEY") {
+      firebase.initializeApp(FIREBASE_CONFIG);
+      db = firebase.database();
+      firebaseReady = true;
+      console.log('✅ Firebase 초기화 성공');
+      return true;
+    } else {
+      console.warn('⚠️ Firebase 설정이 비어있습니다.');
+      return false;
+    }
+  } catch (e) {
+    console.error('Firebase 초기화 실패:', e);
+    return false;
   }
-} catch (e) {
-  console.error('Firebase 초기화 실패:', e);
 }
+initFirebase();
 
 /* ============================================================
    모드 분기
