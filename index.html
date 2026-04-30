@@ -1,0 +1,1276 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="theme-color" content="#C8102E" />
+<title>전주 영화의 거리 리빙랩 - 만족도조사</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  :root {
+    --red: #C8102E;
+    --red-dark: #9A0C24;
+    --red-light: #FCEBEB;
+    --red-soft: #FFF5F6;
+    --bg: #FAFAFA;
+    --white: #FFFFFF;
+    --text: #1A1A1A;
+    --text-mute: #666666;
+    --text-soft: #999999;
+    --border: #E5E5E5;
+    --border-soft: #F0F0F0;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+    --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", "Noto Sans KR", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ==================== 모드 분기 표시 ==================== */
+  .mode-section { display: none; }
+  .mode-section.active { display: block; }
+
+  /* ==================== 응답 화면 (RESPOND) ==================== */
+  #respond-mode {
+    max-width: 540px;
+    margin: 0 auto;
+    padding: 0 16px 40px;
+    min-height: 100vh;
+  }
+  .header {
+    background: var(--red);
+    color: white;
+    margin: 0 -16px 20px;
+    padding: 28px 20px 24px;
+    border-radius: 0 0 24px 24px;
+    box-shadow: var(--shadow-md);
+  }
+  .header-tag {
+    font-size: 12px;
+    opacity: 0.9;
+    letter-spacing: 0.5px;
+    margin-bottom: 6px;
+  }
+  .header-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+  }
+  .header-sub {
+    font-size: 14px;
+    opacity: 0.95;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .header-sub .dot {
+    display: inline-block;
+    width: 6px; height: 6px;
+    background: white;
+    border-radius: 50%;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+  .question {
+    background: white;
+    border-radius: 16px;
+    padding: 20px 18px;
+    margin-bottom: 14px;
+    box-shadow: var(--shadow-sm);
+  }
+  .q-label {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 4px;
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+  }
+  .q-num {
+    color: var(--red);
+    font-size: 13px;
+    font-weight: 700;
+  }
+  .q-required {
+    color: var(--red);
+    font-size: 12px;
+    margin-left: 4px;
+  }
+  .q-help {
+    font-size: 12px;
+    color: var(--text-soft);
+    margin-bottom: 14px;
+  }
+
+  /* 분과 카드 */
+  .division-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .division-card {
+    background: white;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: pointer;
+    transition: all 0.15s;
+    user-select: none;
+  }
+  .division-card:active { transform: scale(0.98); }
+  .division-card.selected {
+    border-color: var(--red);
+    background: var(--red-soft);
+  }
+  .division-num {
+    width: 30px; height: 30px;
+    border-radius: 50%;
+    background: #F5F5F5;
+    color: var(--text-mute);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 700;
+    flex-shrink: 0;
+    transition: all 0.15s;
+  }
+  .division-card.selected .division-num {
+    background: var(--red);
+    color: white;
+  }
+  .division-content {
+    flex: 1;
+    min-width: 0;
+  }
+  .division-title {
+    font-size: 15px;
+    font-weight: 600;
+    margin-bottom: 3px;
+  }
+  .division-codename {
+    font-size: 11px;
+    color: var(--red);
+    font-weight: 500;
+    margin-bottom: 4px;
+  }
+  .division-desc {
+    font-size: 12px;
+    color: var(--text-mute);
+    line-height: 1.45;
+  }
+  .division-check {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: all 0.15s;
+  }
+  .division-card.selected .division-check {
+    background: var(--red);
+    border-color: var(--red);
+  }
+  .division-card.selected .division-check::after {
+    content: '';
+    width: 6px; height: 10px;
+    border-right: 2px solid white;
+    border-bottom: 2px solid white;
+    transform: rotate(45deg) translate(-1px, -1px);
+  }
+
+  /* 텍스트 입력 */
+  .text-input, .text-area {
+    width: 100%;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 14px;
+    font-size: 15px;
+    font-family: inherit;
+    background: white;
+    color: var(--text);
+    resize: none;
+    transition: border-color 0.15s;
+  }
+  .text-input:focus, .text-area:focus {
+    outline: none;
+    border-color: var(--red);
+  }
+  .text-area {
+    min-height: 80px;
+    line-height: 1.5;
+  }
+  .char-count {
+    font-size: 11px;
+    color: var(--text-soft);
+    text-align: right;
+    margin-top: 4px;
+  }
+
+  /* 별점 */
+  .star-rating {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    padding: 8px 0;
+  }
+  .star {
+    font-size: 38px;
+    color: #DDD;
+    cursor: pointer;
+    transition: all 0.15s;
+    user-select: none;
+    line-height: 1;
+  }
+  .star.filled { color: var(--red); }
+  .star:active { transform: scale(0.9); }
+
+  /* 제출 버튼 */
+  .submit-btn {
+    width: 100%;
+    background: var(--red);
+    color: white;
+    border: none;
+    border-radius: 14px;
+    padding: 16px;
+    font-size: 17px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 8px;
+    box-shadow: var(--shadow-md);
+    transition: all 0.15s;
+    font-family: inherit;
+  }
+  .submit-btn:active { transform: scale(0.98); }
+  .submit-btn:disabled {
+    background: #CCCCCC;
+    box-shadow: none;
+    cursor: not-allowed;
+  }
+
+  .progress-bar {
+    height: 4px;
+    background: var(--border-soft);
+    border-radius: 2px;
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--red);
+    border-radius: 2px;
+    transition: width 0.3s;
+    width: 0%;
+  }
+
+  /* 완료 화면 */
+  .thanks-screen {
+    text-align: center;
+    padding: 60px 20px;
+  }
+  .thanks-icon {
+    width: 80px; height: 80px;
+    margin: 0 auto 20px;
+    background: var(--red);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: pop 0.5s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+  }
+  @keyframes pop {
+    0% { transform: scale(0); }
+    100% { transform: scale(1); }
+  }
+  .thanks-icon::after {
+    content: '';
+    width: 28px; height: 16px;
+    border-left: 4px solid white;
+    border-bottom: 4px solid white;
+    transform: rotate(-45deg) translate(2px, -4px);
+  }
+  .thanks-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--red);
+    margin-bottom: 10px;
+  }
+  .thanks-msg {
+    font-size: 15px;
+    color: var(--text-mute);
+    margin-bottom: 30px;
+  }
+  .thanks-btn {
+    background: white;
+    color: var(--red);
+    border: 2px solid var(--red);
+    border-radius: 12px;
+    padding: 12px 24px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  /* ==================== 결과 화면 (DISPLAY) ==================== */
+  #display-mode {
+    min-height: 100vh;
+    padding: 24px;
+    background: var(--bg);
+  }
+  .display-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 14px 24px;
+    background: white;
+    border-radius: 14px;
+    margin-bottom: 18px;
+    box-shadow: var(--shadow-sm);
+    border-bottom: 4px solid var(--red);
+  }
+  .display-title {
+    font-size: 22px;
+    font-weight: 700;
+  }
+  .display-title small {
+    font-size: 13px;
+    font-weight: 400;
+    color: var(--text-mute);
+    margin-left: 10px;
+  }
+  .display-counter {
+    background: var(--red);
+    color: white;
+    padding: 8px 18px;
+    border-radius: 999px;
+    font-size: 16px;
+    font-weight: 700;
+  }
+  .display-counter .live-dot {
+    display: inline-block;
+    width: 8px; height: 8px;
+    background: white;
+    border-radius: 50%;
+    margin-right: 8px;
+    animation: pulse 1.5s ease-in-out infinite;
+  }
+
+  .display-grid {
+    display: grid;
+    grid-template-columns: 5fr 6fr;
+    gap: 18px;
+  }
+  .display-panel {
+    background: white;
+    border-radius: 14px;
+    padding: 22px;
+    box-shadow: var(--shadow-sm);
+  }
+  .panel-title {
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .panel-title::before {
+    content: '';
+    width: 4px; height: 16px;
+    background: var(--red);
+    border-radius: 2px;
+  }
+
+  /* 막대그래프 */
+  .ranking-list { display: flex; flex-direction: column; gap: 16px; }
+  .rank-item { }
+  .rank-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 6px;
+  }
+  .rank-left {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+  }
+  .rank-pos {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--red);
+    min-width: 26px;
+  }
+  .rank-name {
+    font-size: 15px;
+    font-weight: 600;
+  }
+  .rank-codename {
+    font-size: 11px;
+    color: var(--text-soft);
+    margin-left: 6px;
+  }
+  .rank-stats {
+    font-size: 13px;
+    color: var(--text-mute);
+  }
+  .rank-stats strong {
+    color: var(--red);
+    font-size: 16px;
+    margin-right: 4px;
+  }
+  .bar-track {
+    height: 18px;
+    background: #F5F5F5;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .bar-fill {
+    height: 100%;
+    border-radius: 6px;
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    min-width: 4px;
+  }
+
+  /* 만족도 */
+  .satisfaction-box {
+    background: var(--red-soft);
+    border-radius: 12px;
+    padding: 18px;
+    margin-top: 22px;
+    text-align: center;
+  }
+  .sat-label {
+    font-size: 12px;
+    color: var(--text-mute);
+    margin-bottom: 6px;
+  }
+  .sat-value {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--red);
+  }
+  .sat-stars {
+    font-size: 16px;
+    color: var(--red);
+    margin-top: 2px;
+    letter-spacing: 2px;
+  }
+  .sat-meta {
+    font-size: 11px;
+    color: var(--text-soft);
+    margin-top: 4px;
+  }
+
+  /* 말풍선 그리드 */
+  .bubble-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    max-height: 720px;
+    overflow-y: auto;
+    padding-right: 4px;
+  }
+  .bubble-grid::-webkit-scrollbar { width: 6px; }
+  .bubble-grid::-webkit-scrollbar-track { background: var(--border-soft); border-radius: 3px; }
+  .bubble-grid::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+  .bubble {
+    border-radius: 10px;
+    padding: 12px;
+    font-size: 13px;
+    line-height: 1.5;
+    border-left: 3px solid;
+    animation: bubbleIn 0.5s ease-out;
+    word-break: break-word;
+  }
+  @keyframes bubbleIn {
+    0% { opacity: 0; transform: translateY(-8px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+  .bubble-tag {
+    font-size: 10px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .bubble-tag .time {
+    font-weight: 400;
+    opacity: 0.7;
+  }
+  .bubble-text { font-size: 13px; }
+  .bubble-idea {
+    margin-top: 6px;
+    padding-top: 6px;
+    border-top: 1px dashed currentColor;
+    font-size: 12px;
+    opacity: 0.85;
+  }
+  .bubble-idea-label {
+    font-size: 10px;
+    font-weight: 700;
+    margin-bottom: 2px;
+  }
+
+  /* 분과별 색상 */
+  .b-community { background: #FFF4E6; border-color: #E8941F; color: #6B4011; }
+  .b-marketing { background: #FFE9E9; border-color: #E24B4A; color: #791F1F; }
+  .b-branding  { background: #F4E9F7; border-color: #9C5BB1; color: #4A1D5C; }
+  .b-infra     { background: #E8F0FB; border-color: #378ADD; color: #0C447C; }
+  .b-content   { background: #FFE9F0; border-color: #D4537E; color: #72243E; }
+
+  .empty-state {
+    grid-column: 1 / -1;
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-soft);
+    font-size: 14px;
+  }
+
+  /* QR 안내 */
+  .qr-hint {
+    margin-top: 18px;
+    padding: 14px;
+    background: var(--red);
+    color: white;
+    border-radius: 12px;
+    text-align: center;
+    font-size: 14px;
+  }
+  .qr-hint strong { font-size: 16px; }
+
+  /* ==================== 관리자 화면 (ADMIN) ==================== */
+  #admin-mode {
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 40px 20px;
+  }
+  .admin-card {
+    background: white;
+    border-radius: 16px;
+    padding: 28px;
+    box-shadow: var(--shadow-md);
+    margin-bottom: 16px;
+  }
+  .admin-card h2 {
+    font-size: 20px;
+    color: var(--red);
+    margin-bottom: 16px;
+  }
+  .pw-input {
+    width: 100%;
+    padding: 14px;
+    font-size: 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 12px;
+    font-family: inherit;
+  }
+  .admin-btn {
+    background: var(--red);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-right: 8px;
+    margin-bottom: 8px;
+    font-family: inherit;
+  }
+  .admin-btn.secondary {
+    background: white;
+    color: var(--red);
+    border: 1.5px solid var(--red);
+  }
+  .admin-btn.danger { background: #999; }
+  .stat-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .stat-cell {
+    background: var(--red-soft);
+    padding: 14px;
+    border-radius: 10px;
+  }
+  .stat-cell .label { font-size: 12px; color: var(--text-mute); }
+  .stat-cell .value { font-size: 22px; font-weight: 700; color: var(--red); margin-top: 2px; }
+
+  .response-list {
+    max-height: 500px;
+    overflow-y: auto;
+    margin-top: 16px;
+  }
+  .response-row {
+    border-bottom: 1px solid var(--border-soft);
+    padding: 12px 0;
+    font-size: 13px;
+  }
+  .response-row .meta {
+    display: flex;
+    justify-content: space-between;
+    color: var(--text-soft);
+    font-size: 11px;
+    margin-bottom: 4px;
+  }
+  .response-row .division-pill {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 999px;
+    font-size: 11px;
+    font-weight: 600;
+    margin-right: 6px;
+  }
+  .delete-btn {
+    color: #999;
+    background: none;
+    border: 1px solid var(--border);
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .delete-btn:hover { color: var(--red); border-color: var(--red); }
+
+  /* ==================== 모드 선택 화면 (없음 시) ==================== */
+  #select-mode {
+    min-height: 100vh;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  /* .active일 때만 flex 적용 — ID specificity가 .mode-section{display:none}을 이겨버려서
+     모든 모드에서 select-mode가 보이던 버그 수정 (2026-04-30) */
+  #select-mode.active { display: flex; }
+  .select-card {
+    background: white;
+    border-radius: 16px;
+    padding: 32px;
+    box-shadow: var(--shadow-md);
+    max-width: 480px;
+    width: 100%;
+    text-align: center;
+  }
+  .select-card h1 {
+    color: var(--red);
+    margin-bottom: 8px;
+  }
+  .select-card p { color: var(--text-mute); margin-bottom: 20px; font-size: 14px; }
+  .select-card a {
+    display: block;
+    background: white;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 10px;
+    text-decoration: none;
+    color: var(--text);
+    font-weight: 600;
+    transition: all 0.15s;
+  }
+  .select-card a:hover {
+    border-color: var(--red);
+    color: var(--red);
+  }
+  .select-card a small {
+    display: block;
+    font-weight: 400;
+    color: var(--text-soft);
+    font-size: 12px;
+    margin-top: 4px;
+  }
+
+  /* 데스크톱 결과화면 폰트 키우기 */
+  @media (min-width: 1200px) {
+    .display-title { font-size: 26px; }
+    .display-counter { font-size: 18px; padding: 10px 22px; }
+    .panel-title { font-size: 18px; }
+    .rank-name { font-size: 17px; }
+    .rank-stats strong { font-size: 18px; }
+    .bar-track { height: 22px; }
+    .sat-value { font-size: 38px; }
+    .bubble-text { font-size: 14px; }
+  }
+
+  /* 모바일 결과화면 — 세로 스택 */
+  @media (max-width: 900px) {
+    .display-grid { grid-template-columns: 1fr; }
+    #display-mode { padding: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ================================ 모드 선택 (URL에 mode 없을 때) ================================ -->
+<section id="select-mode" class="mode-section">
+  <div class="select-card">
+    <h1>🎬 전주 영화의 거리 리빙랩</h1>
+    <p>만족도 조사 시스템 — 사용할 모드를 선택해주세요</p>
+    <a href="?mode=respond" onclick="location.search='?mode=respond';return false;">📝 응답 화면<small>참여자 — 태블릿/스마트폰에 띄우기</small></a>
+    <a href="?mode=display" onclick="location.search='?mode=display';return false;">📊 결과 화면<small>실시간 결과 — 부스 모니터에 띄우기</small></a>
+    <a href="?mode=admin" onclick="location.search='?mode=admin';return false;">⚙️ 관리자 화면<small>CSV 다운로드, 응답 관리</small></a>
+  </div>
+</section>
+
+<!-- ================================ 응답 화면 ================================ -->
+<section id="respond-mode" class="mode-section">
+  <div id="form-screen">
+    <div class="header">
+      <div class="header-tag">전주 영화의 거리 리빙랩</div>
+      <div class="header-title">만족도 조사</div>
+      <div class="header-sub"><span class="dot"></span>2~3분이면 끝나요!</div>
+    </div>
+
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+
+    <div class="question">
+      <div class="q-label"><span class="q-num">Q1</span>가장 와닿는 아이디어는?<span class="q-required">*</span></div>
+      <div class="q-help">5개 분과의 기획안 중 하나를 골라주세요</div>
+      <div class="division-list" id="division-list"></div>
+    </div>
+
+    <div class="question">
+      <div class="q-label"><span class="q-num">Q2</span>그 아이디어를 고른 이유<span class="q-required">*</span></div>
+      <div class="q-help">짧게 한 두 문장이면 충분해요</div>
+      <textarea class="text-area" id="reason-input" maxlength="200" placeholder="예) 캐릭터가 귀여워서 굿즈 사고 싶어요"></textarea>
+      <div class="char-count"><span id="reason-count">0</span> / 200</div>
+    </div>
+
+    <div class="question">
+      <div class="q-label"><span class="q-num">Q3</span>활성화를 위한 추가 아이디어 <span style="font-weight:400;color:var(--text-soft);font-size:13px;">(선택)</span></div>
+      <div class="q-help">자유롭게 적어주세요. 비워두셔도 됩니다.</div>
+      <textarea class="text-area" id="idea-input" maxlength="300" placeholder="예) 다른 도시 캐릭터와 콜라보도 좋을 것 같아요"></textarea>
+      <div class="char-count"><span id="idea-count">0</span> / 300</div>
+    </div>
+
+    <div class="question">
+      <div class="q-label"><span class="q-num">Q4</span>전시·홍보 부스는 어떠셨나요?<span class="q-required">*</span></div>
+      <div class="q-help">별을 탭해주세요</div>
+      <div class="star-rating" id="star-rating">
+        <span class="star" data-val="1">★</span>
+        <span class="star" data-val="2">★</span>
+        <span class="star" data-val="3">★</span>
+        <span class="star" data-val="4">★</span>
+        <span class="star" data-val="5">★</span>
+      </div>
+    </div>
+
+    <div class="question">
+      <div class="q-label"><span class="q-num">Q5</span>한줄평 <span style="font-weight:400;color:var(--text-soft);font-size:13px;">(선택)</span></div>
+      <div class="q-help">전시·홍보 내용에 대한 짧은 소감</div>
+      <input type="text" class="text-input" id="comment-input" maxlength="80" placeholder="예) 골목이 영화가 된다니, 기대돼요!" />
+    </div>
+
+    <button class="submit-btn" id="submit-btn" disabled>제출하기</button>
+  </div>
+
+  <div id="thanks-screen" class="thanks-screen" style="display:none;">
+    <div class="thanks-icon"></div>
+    <div class="thanks-title">감사합니다!</div>
+    <div class="thanks-msg">소중한 의견이 잘 전달되었어요.<br>옆 화면에서 실시간 결과를 확인해보세요.</div>
+    <button class="thanks-btn" id="restart-btn">다시 응답하기</button>
+  </div>
+</section>
+
+<!-- ================================ 실시간 결과 화면 ================================ -->
+<section id="display-mode" class="mode-section">
+  <div class="display-header">
+    <div class="display-title">🎬 전주 영화의 거리 리빙랩 <small>실시간 응답 현황</small></div>
+    <div class="display-counter"><span class="live-dot"></span>응답수 <span id="total-count">0</span></div>
+  </div>
+
+  <div class="display-grid">
+    <div class="display-panel">
+      <div class="panel-title">분과 인기 순위</div>
+      <div class="ranking-list" id="ranking-list"></div>
+
+      <div class="satisfaction-box">
+        <div class="sat-label">전시·홍보 만족도</div>
+        <div class="sat-value" id="sat-value">-</div>
+        <div class="sat-stars" id="sat-stars">☆☆☆☆☆</div>
+        <div class="sat-meta" id="sat-meta">아직 응답이 없어요</div>
+      </div>
+    </div>
+
+    <div class="display-panel">
+      <div class="panel-title">참여자들의 목소리</div>
+      <div class="bubble-grid" id="bubble-grid">
+        <div class="empty-state">첫 응답을 기다리는 중... ✨</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="qr-hint" id="qr-hint" style="display:none;">
+    <strong>지금 응답해보세요!</strong> 부스에 비치된 QR코드를 스캔하거나, 가까이 계신 운영진에게 링크를 받으세요.
+  </div>
+</section>
+
+<!-- ================================ 관리자 화면 ================================ -->
+<section id="admin-mode" class="mode-section">
+  <div id="admin-login" class="admin-card">
+    <h2>🔐 관리자 모드</h2>
+    <p style="color:var(--text-mute); font-size:14px; margin-bottom:16px;">관리자 비밀번호를 입력해주세요.</p>
+    <input type="password" class="pw-input" id="pw-input" placeholder="비밀번호" />
+    <button class="admin-btn" id="login-btn">로그인</button>
+    <div id="login-msg" style="color:var(--red); font-size:13px; margin-top:8px;"></div>
+  </div>
+
+  <div id="admin-panel" style="display:none;">
+    <div class="admin-card">
+      <h2>📊 응답 현황</h2>
+      <div class="stat-grid">
+        <div class="stat-cell"><div class="label">총 응답수</div><div class="value" id="admin-total">0</div></div>
+        <div class="stat-cell"><div class="label">평균 만족도</div><div class="value" id="admin-sat">-</div></div>
+        <div class="stat-cell"><div class="label">1위 분과</div><div class="value" id="admin-top" style="font-size:16px;">-</div></div>
+        <div class="stat-cell"><div class="label">아이디어 응답수</div><div class="value" id="admin-ideas">0</div></div>
+      </div>
+      <button class="admin-btn" id="csv-btn">📥 CSV 다운로드</button>
+      <button class="admin-btn secondary" id="copy-link-btn">🔗 결과화면 공유 링크 복사</button>
+      <button class="admin-btn secondary" onclick="window.open('?mode=display','_blank')">📺 결과화면 새 창으로 열기</button>
+    </div>
+
+    <div class="admin-card">
+      <h2>📝 응답 목록</h2>
+      <p style="color:var(--text-mute); font-size:13px;">부적절한 응답이 있다면 우측 삭제 버튼으로 숨길 수 있습니다.</p>
+      <div class="response-list" id="response-list"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================================ Firebase ================================ -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<script>
+/* ============================================================
+   설정 — 라라님이 채워주실 부분
+   ============================================================ */
+const FIREBASE_CONFIG = {
+  apiKey: "AIzaSyA-kkkYZIJyHuH_0CEFx-ZGmLPncMeri58",
+  authDomain: "jeonju-livinglab.firebaseapp.com",
+  databaseURL: "https://jeonju-livinglab-default-rtdb.asia-southeast1.firebasedatabase.app",
+  projectId: "jeonju-livinglab",
+  storageBucket: "jeonju-livinglab.firebasestorage.app",
+  messagingSenderId: "752992729732",
+  appId: "1:752992729732:web:93cbbe2e795e8e9d14a0d1"
+};
+
+const ADMIN_PASSWORD = "2026";  // 👈 관리자 비밀번호 (편한 걸로 바꾸세요)
+
+const DIVISIONS = [
+  { code: 'community', num: 1, codename: '영화로 모이다', title: '커뮤니티 영화상영회', desc: "'영화 속의 전주' 커뮤니티 영화상영회 운영", color: '#E8941F', cls: 'b-community' },
+  { code: 'marketing', num: 2, codename: '맛집과 영화사이', title: '맛집 키링 굿즈 팝업', desc: '전주 대표맛집 TOP5 키링 굿즈 + 팝업스토어', color: '#E24B4A', cls: 'b-marketing' },
+  { code: 'branding',  num: 3, codename: '시네호와 네컷',   title: '캐릭터 + 추억형 체험',  desc: '영화의 거리 캐릭터 개발, 추억형 체험콘텐츠', color: '#9C5BB1', cls: 'b-branding' },
+  { code: 'infra',     num: 4, codename: '골목이 영화가 되다', title: '골목 미디어파사드', desc: '영화의 거리 골목 미디어파사드 조성', color: '#378ADD', cls: 'b-infra' },
+  { code: 'content',   num: 5, codename: '무비팅',           title: '영화 취향 매칭 소개팅', desc: '영화로 만난 인연, 무비팅 소개팅 프로그램', color: '#D4537E', cls: 'b-content' }
+];
+
+/* ============================================================
+   Firebase 초기화
+   ============================================================ */
+let db;
+let firebaseReady = false;
+function initFirebase() {
+  try {
+    if (typeof firebase === 'undefined') {
+      console.error('Firebase SDK가 로드되지 않았습니다.');
+      return false;
+    }
+    if (FIREBASE_CONFIG.apiKey !== "YOUR_API_KEY") {
+      firebase.initializeApp(FIREBASE_CONFIG);
+      db = firebase.database();
+      firebaseReady = true;
+      console.log('✅ Firebase 초기화 성공');
+      return true;
+    } else {
+      console.warn('⚠️ Firebase 설정이 비어있습니다.');
+      return false;
+    }
+  } catch (e) {
+    console.error('Firebase 초기화 실패:', e);
+    return false;
+  }
+}
+initFirebase();
+
+/* ============================================================
+   모드 분기 (DOM 로드 후 실행)
+   ============================================================ */
+function initMode() {
+  const params = new URLSearchParams(window.location.search);
+  const mode = params.get('mode');
+  console.log('🎯 모드 분기 시작:', mode);
+
+  document.querySelectorAll('.mode-section').forEach(s => s.classList.remove('active'));
+  if (mode === 'respond') {
+    document.getElementById('respond-mode').classList.add('active');
+    initRespond();
+  } else if (mode === 'display') {
+    document.getElementById('display-mode').classList.add('active');
+    initDisplay();
+  } else if (mode === 'admin') {
+    document.getElementById('admin-mode').classList.add('active');
+    initAdmin();
+  } else {
+    document.getElementById('select-mode').classList.add('active');
+  }
+  console.log('✅ 모드 분기 완료');
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initMode);
+} else {
+  initMode();
+}
+
+/* ============================================================
+   응답 화면 로직
+   ============================================================ */
+function initRespond() {
+  const state = { division: null, reason: '', idea: '', satisfaction: 0, comment: '' };
+
+  // 분과 카드 렌더 (랜덤 순서로 — 순서 편향 방지)
+  const shuffled = [...DIVISIONS].sort(() => Math.random() - 0.5);
+  const list = document.getElementById('division-list');
+  shuffled.forEach(d => {
+    const card = document.createElement('div');
+    card.className = 'division-card';
+    card.dataset.code = d.code;
+    card.innerHTML = `
+      <div class="division-num">${d.num}</div>
+      <div class="division-content">
+        <div class="division-codename">${d.codename}</div>
+        <div class="division-title">${d.title}</div>
+        <div class="division-desc">${d.desc}</div>
+      </div>
+      <div class="division-check"></div>
+    `;
+    card.addEventListener('click', () => {
+      document.querySelectorAll('.division-card').forEach(c => c.classList.remove('selected'));
+      card.classList.add('selected');
+      state.division = d.code;
+      updateProgress();
+    });
+    list.appendChild(card);
+  });
+
+  // 텍스트 입력
+  const reasonInput = document.getElementById('reason-input');
+  const ideaInput = document.getElementById('idea-input');
+  const commentInput = document.getElementById('comment-input');
+
+  reasonInput.addEventListener('input', () => {
+    state.reason = reasonInput.value.trim();
+    document.getElementById('reason-count').textContent = reasonInput.value.length;
+    updateProgress();
+  });
+  ideaInput.addEventListener('input', () => {
+    state.idea = ideaInput.value.trim();
+    document.getElementById('idea-count').textContent = ideaInput.value.length;
+  });
+  commentInput.addEventListener('input', () => {
+    state.comment = commentInput.value.trim();
+  });
+
+  // 별점
+  const stars = document.querySelectorAll('.star');
+  stars.forEach(s => {
+    s.addEventListener('click', () => {
+      const v = parseInt(s.dataset.val);
+      state.satisfaction = v;
+      stars.forEach((star, i) => star.classList.toggle('filled', i < v));
+      updateProgress();
+    });
+  });
+
+  // 진행률 / 제출 버튼
+  function updateProgress() {
+    let n = 0;
+    if (state.division) n++;
+    if (state.reason && state.reason.length >= 2) n++;
+    if (state.satisfaction > 0) n++;
+    const pct = (n / 3) * 100;
+    document.getElementById('progress-fill').style.width = pct + '%';
+    document.getElementById('submit-btn').disabled = n < 3;
+  }
+
+  // 제출
+  document.getElementById('submit-btn').addEventListener('click', async () => {
+    const btn = document.getElementById('submit-btn');
+    if (!state.division) { alert('Q1: 아이디어를 골라주세요'); return; }
+    if (!state.reason || state.reason.length < 2) { alert('Q2: 선택한 이유를 적어주세요'); return; }
+    if (!state.satisfaction) { alert('Q4: 별점을 매겨주세요'); return; }
+
+    btn.disabled = true;
+    btn.textContent = '전송 중...';
+
+    const data = {
+      timestamp: Date.now(),
+      division: state.division,
+      reason: state.reason,
+      idea: state.idea || '',
+      satisfaction: state.satisfaction,
+      comment: state.comment || '',
+      hidden: false
+    };
+
+    try {
+      if (firebaseReady) {
+        await db.ref('responses').push(data);
+        // 중복 제출 방지 마크 (같은 기기 30분)
+        try { localStorage.setItem('lastSubmit', Date.now().toString()); } catch(e){}
+      } else {
+        // Firebase 미설정 시 로컬에만 저장 (테스트용)
+        const arr = JSON.parse(localStorage.getItem('localResponses') || '[]');
+        arr.push(data);
+        localStorage.setItem('localResponses', JSON.stringify(arr));
+        alert('⚠️ Firebase 미설정 상태입니다. 로컬에만 저장됨.');
+      }
+      document.getElementById('form-screen').style.display = 'none';
+      document.getElementById('thanks-screen').style.display = 'block';
+    } catch (e) {
+      alert('제출 실패: ' + e.message);
+      btn.disabled = false;
+      btn.textContent = '제출하기';
+    }
+  });
+
+  document.getElementById('restart-btn').addEventListener('click', () => {
+    location.reload();
+  });
+}
+
+/* ============================================================
+   결과 화면 로직 — 실시간 구독
+   ============================================================ */
+function initDisplay() {
+  if (!firebaseReady) {
+    document.getElementById('ranking-list').innerHTML = '<div class="empty-state">⚠️ Firebase 설정이 필요합니다.<br>코드 상단 FIREBASE_CONFIG를 채워주세요.</div>';
+    return;
+  }
+
+  document.getElementById('qr-hint').style.display = 'block';
+
+  db.ref('responses').on('value', (snap) => {
+    const all = [];
+    snap.forEach(c => {
+      const v = c.val();
+      if (!v.hidden) all.push(v);
+    });
+
+    document.getElementById('total-count').textContent = all.length;
+
+    // 분과별 카운트
+    const counts = {};
+    DIVISIONS.forEach(d => counts[d.code] = 0);
+    all.forEach(r => { if (counts[r.division] !== undefined) counts[r.division]++; });
+
+    // 정렬
+    const ranked = DIVISIONS.map(d => ({
+      ...d,
+      count: counts[d.code],
+      pct: all.length ? Math.round((counts[d.code] / all.length) * 100) : 0
+    })).sort((a, b) => b.count - a.count);
+
+    // 막대그래프 렌더
+    const rankList = document.getElementById('ranking-list');
+    const maxCount = Math.max(...ranked.map(r => r.count), 1);
+    rankList.innerHTML = ranked.map((r, i) => `
+      <div class="rank-item">
+        <div class="rank-header">
+          <div class="rank-left">
+            <span class="rank-pos">${i + 1}위</span>
+            <span class="rank-name">${r.codename}</span>
+            <span class="rank-codename">${r.title}</span>
+          </div>
+          <div class="rank-stats"><strong>${r.count}</strong>표 · ${r.pct}%</div>
+        </div>
+        <div class="bar-track"><div class="bar-fill" style="width:${(r.count/maxCount)*100}%; background:${r.color};"></div></div>
+      </div>
+    `).join('');
+
+    // 만족도
+    if (all.length) {
+      const avg = all.reduce((s, r) => s + (r.satisfaction || 0), 0) / all.length;
+      document.getElementById('sat-value').textContent = avg.toFixed(2) + ' / 5.0';
+      const filled = Math.round(avg);
+      document.getElementById('sat-stars').textContent = '★'.repeat(filled) + '☆'.repeat(5 - filled);
+      document.getElementById('sat-meta').textContent = `응답 ${all.length}명 평균`;
+    }
+
+    // 말풍선 (최신순)
+    const bubbles = [...all].sort((a, b) => b.timestamp - a.timestamp);
+    const grid = document.getElementById('bubble-grid');
+    if (!bubbles.length) {
+      grid.innerHTML = '<div class="empty-state">첫 응답을 기다리는 중... ✨</div>';
+    } else {
+      grid.innerHTML = bubbles.map(r => {
+        const d = DIVISIONS.find(x => x.code === r.division);
+        if (!d) return '';
+        const time = formatTime(r.timestamp);
+        return `
+          <div class="bubble ${d.cls}">
+            <div class="bubble-tag"><span>${d.codename}</span><span class="time">${time}</span></div>
+            <div class="bubble-text">${escapeHtml(r.reason)}</div>
+            ${r.idea ? `<div class="bubble-idea"><div class="bubble-idea-label">💡 추가 아이디어</div>${escapeHtml(r.idea)}</div>` : ''}
+          </div>
+        `;
+      }).join('');
+    }
+  });
+}
+
+function formatTime(ts) {
+  const diff = (Date.now() - ts) / 1000;
+  if (diff < 60) return '방금';
+  if (diff < 3600) return Math.floor(diff / 60) + '분 전';
+  const d = new Date(ts);
+  return `${d.getHours()}:${String(d.getMinutes()).padStart(2,'0')}`;
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+
+/* ============================================================
+   관리자 화면 로직
+   ============================================================ */
+function initAdmin() {
+  document.getElementById('login-btn').addEventListener('click', tryLogin);
+  document.getElementById('pw-input').addEventListener('keypress', e => { if (e.key === 'Enter') tryLogin(); });
+
+  function tryLogin() {
+    const pw = document.getElementById('pw-input').value;
+    if (pw === ADMIN_PASSWORD) {
+      document.getElementById('admin-login').style.display = 'none';
+      document.getElementById('admin-panel').style.display = 'block';
+      loadAdminData();
+    } else {
+      document.getElementById('login-msg').textContent = '비밀번호가 틀렸습니다.';
+    }
+  }
+}
+
+function loadAdminData() {
+  if (!firebaseReady) {
+    alert('Firebase 설정이 필요합니다.');
+    return;
+  }
+
+  db.ref('responses').on('value', (snap) => {
+    const all = [];
+    snap.forEach(c => {
+      all.push({ key: c.key, ...c.val() });
+    });
+
+    const visible = all.filter(r => !r.hidden);
+    document.getElementById('admin-total').textContent = visible.length;
+
+    const ideaCount = visible.filter(r => r.idea && r.idea.trim()).length;
+    document.getElementById('admin-ideas').textContent = ideaCount;
+
+    if (visible.length) {
+      const avg = visible.reduce((s, r) => s + (r.satisfaction || 0), 0) / visible.length;
+      document.getElementById('admin-sat').textContent = avg.toFixed(2);
+
+      const counts = {};
+      DIVISIONS.forEach(d => counts[d.code] = 0);
+      visible.forEach(r => { if (counts[r.division] !== undefined) counts[r.division]++; });
+      const top = Object.entries(counts).sort((a, b) => b[1] - a[1])[0];
+      const topDiv = DIVISIONS.find(d => d.code === top[0]);
+      document.getElementById('admin-top').textContent = topDiv ? `${topDiv.codename} (${top[1]}표)` : '-';
+    }
+
+    // 응답 목록
+    const list = document.getElementById('response-list');
+    const sorted = [...all].sort((a, b) => b.timestamp - a.timestamp);
+    list.innerHTML = sorted.map(r => {
+      const d = DIVISIONS.find(x => x.code === r.division);
+      const dt = new Date(r.timestamp);
+      const dateStr = `${dt.getMonth()+1}/${dt.getDate()} ${dt.getHours()}:${String(dt.getMinutes()).padStart(2,'0')}`;
+      const hiddenStyle = r.hidden ? 'opacity:0.4; text-decoration:line-through;' : '';
+      return `
+        <div class="response-row" style="${hiddenStyle}">
+          <div class="meta">
+            <span>
+              <span class="division-pill" style="background:${d.color}20; color:${d.color};">${d ? d.codename : r.division}</span>
+              ★${r.satisfaction} · ${dateStr}
+            </span>
+            <button class="delete-btn" onclick="toggleHide('${r.key}', ${!r.hidden})">${r.hidden ? '복구' : '숨기기'}</button>
+          </div>
+          <div><strong>이유:</strong> ${escapeHtml(r.reason || '')}</div>
+          ${r.idea ? `<div><strong>아이디어:</strong> ${escapeHtml(r.idea)}</div>` : ''}
+          ${r.comment ? `<div><strong>한줄평:</strong> ${escapeHtml(r.comment)}</div>` : ''}
+        </div>
+      `;
+    }).join('') || '<div style="color:var(--text-soft); padding:20px; text-align:center;">아직 응답이 없습니다.</div>';
+  });
+
+  // CSV 다운로드
+  document.getElementById('csv-btn').addEventListener('click', () => downloadCSV());
+
+  // 결과화면 링크 복사
+  document.getElementById('copy-link-btn').addEventListener('click', () => {
+    const url = window.location.origin + window.location.pathname + '?mode=display';
+    navigator.clipboard.writeText(url).then(() => alert('복사됨: ' + url));
+  });
+}
+
+window.toggleHide = function(key, newHidden) {
+  if (!confirm(newHidden ? '이 응답을 숨길까요?' : '이 응답을 복구할까요?')) return;
+  db.ref('responses/' + key + '/hidden').set(newHidden);
+};
+
+function downloadCSV() {
+  db.ref('responses').once('value').then(snap => {
+    const rows = [['시간', '분과코드', '분과명', '선택이유', '추가아이디어', '만족도', '한줄평', '상태']];
+    snap.forEach(c => {
+      const r = c.val();
+      const d = DIVISIONS.find(x => x.code === r.division);
+      const dt = new Date(r.timestamp);
+      const dateStr = `${dt.getFullYear()}-${String(dt.getMonth()+1).padStart(2,'0')}-${String(dt.getDate()).padStart(2,'0')} ${String(dt.getHours()).padStart(2,'0')}:${String(dt.getMinutes()).padStart(2,'0')}`;
+      rows.push([
+        dateStr,
+        r.division || '',
+        d ? d.codename : '',
+        (r.reason || '').replace(/"/g, '""'),
+        (r.idea || '').replace(/"/g, '""'),
+        r.satisfaction || '',
+        (r.comment || '').replace(/"/g, '""'),
+        r.hidden ? '숨김' : '공개'
+      ]);
+    });
+    const csv = '\uFEFF' + rows.map(r => r.map(c => `"${c}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `livinglab_responses_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+}
+</script>
+</body>
+</html>

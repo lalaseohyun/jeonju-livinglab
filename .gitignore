@@ -1,0 +1,12 @@
+# 안정 버전 백업 (CLAUDE.md 워크플로우 — 로컬 보관용)
+index_stable_*.html
+
+# Claude Code 로컬 dev 설정 (preview 서버 등)
+.claude/
+
+# OS / 에디터
+.DS_Store
+Thumbs.db
+*.swp
+.vscode/
+.idea/
