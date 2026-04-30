@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<!-- saved from url=(0058)file:///C:/Users/%EB%9D%BC%EB%9D%BC/Downloads/index_2.html -->
-<html lang="ko"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="theme-color" content="#C8102E">
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="theme-color" content="#C8102E" />
 <title>전주 영화의 거리 리빙랩 - 만족도조사</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
@@ -721,13 +721,13 @@
 <body>
 
 <!-- ================================ 모드 선택 (URL에 mode 없을 때) ================================ -->
-<section id="select-mode" class="mode-section active">
+<section id="select-mode" class="mode-section">
   <div class="select-card">
     <h1>🎬 전주 영화의 거리 리빙랩</h1>
     <p>만족도 조사 시스템 — 사용할 모드를 선택해주세요</p>
-    <a href="file:///C:/Users/%EB%9D%BC%EB%9D%BC/Downloads/index_2.html?mode=respond">📝 응답 화면<small>참여자 — 태블릿/스마트폰에 띄우기</small></a>
-    <a href="file:///C:/Users/%EB%9D%BC%EB%9D%BC/Downloads/index_2.html?mode=display">📊 결과 화면<small>실시간 결과 — 부스 모니터에 띄우기</small></a>
-    <a href="file:///C:/Users/%EB%9D%BC%EB%9D%BC/Downloads/index_2.html?mode=admin">⚙️ 관리자 화면<small>CSV 다운로드, 응답 관리</small></a>
+    <a href="?mode=respond">📝 응답 화면<small>참여자 — 태블릿/스마트폰에 띄우기</small></a>
+    <a href="?mode=display">📊 결과 화면<small>실시간 결과 — 부스 모니터에 띄우기</small></a>
+    <a href="?mode=admin">⚙️ 관리자 화면<small>CSV 다운로드, 응답 관리</small></a>
   </div>
 </section>
 
@@ -777,10 +777,10 @@
     <div class="question">
       <div class="q-label"><span class="q-num">Q5</span>한줄평 <span style="font-weight:400;color:var(--text-soft);font-size:13px;">(선택)</span></div>
       <div class="q-help">전시·홍보 내용에 대한 짧은 소감</div>
-      <input type="text" class="text-input" id="comment-input" maxlength="80" placeholder="예) 골목이 영화가 된다니, 기대돼요!">
+      <input type="text" class="text-input" id="comment-input" maxlength="80" placeholder="예) 골목이 영화가 된다니, 기대돼요!" />
     </div>
 
-    <button class="submit-btn" id="submit-btn" disabled="">제출하기</button>
+    <button class="submit-btn" id="submit-btn" disabled>제출하기</button>
   </div>
 
   <div id="thanks-screen" class="thanks-screen" style="display:none;">
@@ -829,7 +829,7 @@
   <div id="admin-login" class="admin-card">
     <h2>🔐 관리자 모드</h2>
     <p style="color:var(--text-mute); font-size:14px; margin-bottom:16px;">관리자 비밀번호를 입력해주세요.</p>
-    <input type="password" class="pw-input" id="pw-input" placeholder="비밀번호">
+    <input type="password" class="pw-input" id="pw-input" placeholder="비밀번호" />
     <button class="admin-btn" id="login-btn">로그인</button>
     <div id="login-msg" style="color:var(--red); font-size:13px; margin-top:8px;"></div>
   </div>
@@ -845,7 +845,7 @@
       </div>
       <button class="admin-btn" id="csv-btn">📥 CSV 다운로드</button>
       <button class="admin-btn secondary" id="copy-link-btn">🔗 결과화면 공유 링크 복사</button>
-      <button class="admin-btn secondary" onclick="window.open(&#39;?mode=display&#39;,&#39;_blank&#39;)">📺 결과화면 새 창으로 열기</button>
+      <button class="admin-btn secondary" onclick="window.open('?mode=display','_blank')">📺 결과화면 새 창으로 열기</button>
     </div>
 
     <div class="admin-card">
@@ -857,8 +857,8 @@
 </section>
 
 <!-- ================================ Firebase ================================ -->
-<script src="./index_files/firebase-app-compat.js.다운로드"></script>
-<script src="./index_files/firebase-database-compat.js.다운로드"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
 <script>
 /* ============================================================
@@ -1260,6 +1260,5 @@ function downloadCSV() {
   });
 }
 </script>
-
-
-</body></html>
+</body>
+</html>
