@@ -1434,9 +1434,9 @@ function initDisplay() {
   // 참여자들의 목소리 자동 스크롤 — 끝에 닿으면 잠시 멈춘 뒤 처음으로 부드럽게 복귀
   const bubbleGrid = document.getElementById('bubble-grid');
   bubbleGrid.classList.add('auto-scroll'); // 스크롤바 숨김
-  const SCROLL_PX_PER_FRAME = 0.6;  // 약 36px/sec @ 60fps — 천천히 자연스럽게
-  const PAUSE_AT_END_MS = 2500;     // 끝에 도달했을 때 멈춤 시간
-  const RESET_DELAY_MS = 2000;      // 멈춘 뒤 처음으로 돌아가기까지
+  const SCROLL_PX_PER_FRAME = 1.5;  // 약 90px/sec @ 60fps — 명확히 눈에 띄게
+  const PAUSE_AT_END_MS = 1500;     // 끝에 도달했을 때 멈춤 시간
+  const RESET_DELAY_MS = 1000;      // 멈춘 뒤 처음으로 돌아가기까지
   let pausedUntil = 0;
   function autoScrollTick(now) {
     requestAnimationFrame(autoScrollTick);
