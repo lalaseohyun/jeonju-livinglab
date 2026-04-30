@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>디자인 시안 비교 — 전주 영화의 거리 아이디어 제안소</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", "Noto Sans KR", sans-serif;
+    background: #F5F5F5;
+    color: #1A1A1A;
+    line-height: 1.5;
+    padding-bottom: 40px;
+  }
+  .toolbar {
+    position: sticky; top: 0; z-index: 10;
+    background: white; padding: 16px 24px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    display: flex; align-items: center; flex-wrap: wrap; gap: 14px;
+  }
+  .toolbar h1 { font-size: 18px; margin-right: auto; color: #C8102E; }
+  .toolbar h1 small { color: #999; font-weight: 400; font-size: 13px; margin-left: 8px; }
+  .design-btn {
+    padding: 10px 20px; border-radius: 999px; border: 2px solid #E5E5E5;
+    background: white; cursor: pointer; font-weight: 700; font-size: 14px;
+    font-family: inherit; transition: all 0.15s;
+  }
+  .design-btn:hover { border-color: #C8102E; }
+  .design-btn.active { background: #C8102E; color: white; border-color: #C8102E; }
+  .design-info {
+    max-width: 1280px; margin: 24px auto 16px; padding: 0 24px;
+  }
+  .design-info h2 { font-size: 22px; margin-bottom: 6px; }
+  .design-info p { color: #666; font-size: 14px; }
+  .design-info code { background: #f0f0f0; padding: 2px 6px; border-radius: 4px; font-size: 12px; }
+
+  /* ========== 디스플레이 모드 (인덱스에서 가져온 구조) ========== */
+  :root {
+    --red: #C8102E;
+    --bg: #FAFAFA;
+    --white: #FFFFFF;
+    --text: #1A1A1A;
+    --text-mute: #666;
+    --text-soft: #999;
+    --border: #E5E5E5;
+    --border-soft: #F0F0F0;
+    --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+  }
+  .stage { max-width: 1280px; margin: 0 auto; padding: 0 24px; }
+  #display-mode {
+    background: var(--bg);
+    padding: 24px;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+    transition: background 0.3s;
+  }
+  .display-header {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 24px; background: white; border-radius: 14px;
+    margin-bottom: 18px; box-shadow: var(--shadow-sm);
+    border-bottom: 4px solid var(--red);
+  }
+  .display-title {
+    font-size: 28px; font-weight: 900; letter-spacing: -0.5px; color: var(--text);
+  }
+  .display-title small {
+    font-size: 14px; font-weight: 600; color: var(--text-mute); margin-left: 10px;
+  }
+  .display-counter {
+    background: var(--red); color: white; padding: 10px 20px; border-radius: 999px;
+    font-size: 18px; font-weight: 800;
+  }
+  .display-counter .live-dot {
+    display: inline-block; width: 8px; height: 8px; background: white;
+    border-radius: 50%; margin-right: 8px; animation: pulse 1.5s ease-in-out infinite;
+  }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+  .display-grid {
+    display: grid; grid-template-columns: 5fr 6fr; gap: 18px;
+  }
+  .display-panel {
+    background: white; border-radius: 14px; padding: 22px;
+    box-shadow: var(--shadow-sm);
+  }
+  .panel-title {
+    font-size: 20px; font-weight: 800; margin-bottom: 16px;
+    color: var(--text); display: flex; align-items: center; gap: 8px;
+  }
+  .panel-title::before {
+    content: ''; width: 5px; height: 18px; background: var(--red); border-radius: 2px;
+  }
+
+  .ranking-list { display: flex; flex-direction: column; gap: 18px; }
+  .rank-header {
+    display: flex; justify-content: space-between; align-items: baseline;
+    margin-bottom: 6px; flex-wrap: nowrap; gap: 8px;
+  }
+  .rank-left { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
+  .rank-pos { font-size: 18px; font-weight: 800; color: var(--red); min-width: 32px; }
+  .rank-name { font-size: 22px; font-weight: 800; white-space: nowrap; }
+  .rank-codename {
+    font-size: 13px; color: var(--text-soft); margin-left: 6px; font-weight: 500;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .rank-stats { font-size: 16px; color: var(--text-mute); font-weight: 700; white-space: nowrap; }
+  .rank-stats strong { color: var(--red); font-size: 22px; margin-right: 4px; font-weight: 900; }
+  .bar-track { height: 22px; background: #F5F5F5; border-radius: 8px; overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 8px; transition: width 0.6s; }
+
+  .satisfaction-box {
+    background: #FFF5F6; border-radius: 12px; padding: 18px;
+    margin-top: 22px; text-align: center;
+  }
+  .sat-label { font-size: 13px; color: var(--text-mute); margin-bottom: 6px; font-weight: 700; }
+  .sat-value { font-size: 38px; font-weight: 900; color: var(--red); }
+  .sat-stars { font-size: 20px; color: var(--red); margin-top: 2px; letter-spacing: 3px; }
+  .sat-meta { font-size: 11px; color: var(--text-soft); margin-top: 4px; font-weight: 600; }
+
+  .bubble-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
+    max-height: 600px; overflow-y: auto;
+  }
+  .bubble {
+    border-radius: 10px; padding: 14px;
+    font-size: 14px; line-height: 1.5; border-left: 4px solid;
+    word-break: break-word;
+  }
+  .bubble-tag {
+    font-size: 11px; font-weight: 800; margin-bottom: 4px;
+    display: flex; justify-content: space-between; align-items: center;
+  }
+  .bubble-tag .time { font-weight: 400; opacity: 0.7; }
+  .bubble-text { font-size: 14px; font-weight: 600; }
+  .bubble-idea {
+    margin-top: 6px; padding-top: 6px; border-top: 1px dashed currentColor;
+    font-size: 12px; opacity: 0.85; font-weight: 500;
+  }
+  .bubble-idea-label { font-size: 10px; font-weight: 800; margin-bottom: 2px; }
+
+  /* 분과별 색상 (기본값 — JS에서 디자인별로 오버라이드) */
+  .b-community { background: #FFF4E6; border-color: #E8941F; color: #6B4011; }
+  .b-marketing { background: #FFE9E9; border-color: #E24B4A; color: #791F1F; }
+  .b-branding  { background: #F4E9F7; border-color: #9C5BB1; color: #4A1D5C; }
+  .b-infra     { background: #E8F0FB; border-color: #378ADD; color: #0C447C; }
+  .b-content   { background: #FFE9F0; border-color: #D4537E; color: #72243E; }
+
+  .qr-hint {
+    margin-top: 18px; padding: 14px; background: var(--red); color: white;
+    border-radius: 12px; text-align: center; font-size: 16px; font-weight: 700;
+  }
+  .qr-hint strong { font-size: 18px; font-weight: 900; }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+  <h1>🎬 디자인 시안 비교 <small>버튼을 눌러서 시안 A/B/C/D 비교하세요</small></h1>
+  <button class="design-btn active" data-design="A">시안 A — 크림+레드</button>
+  <button class="design-btn" data-design="B">시안 B — 다크우드+모노</button>
+  <button class="design-btn" data-design="C">시안 C — 화이트+흙톤</button>
+  <button class="design-btn" data-design="D">시안 D — 시네마틱 다크</button>
+</div>
+
+<div class="design-info" id="design-info">
+  <h2>시안 A — 따뜻한 크림 + 레드 스펙트럼</h2>
+  <p>차분한 수공예/공방 느낌. 우드 톤 부스에 가장 자연스럽게 어우러짐. 분과 색: 황토/레드/와인/다크우드/로즈.</p>
+</div>
+
+<div class="stage">
+  <section id="display-mode">
+    <div class="display-header">
+      <div class="display-title">🎬 전주 영화의 거리 아이디어 제안소 <small>실시간 응답 현황</small></div>
+      <div class="display-counter"><span class="live-dot"></span>응답수 24</div>
+    </div>
+
+    <div class="display-grid">
+      <div class="display-panel">
+        <div class="panel-title">분과 인기 순위</div>
+        <div class="ranking-list" id="ranking-list"></div>
+        <div class="satisfaction-box">
+          <div class="sat-label">아이디어 제안소 만족도</div>
+          <div class="sat-value">4.6 / 5.0</div>
+          <div class="sat-stars">★★★★★</div>
+          <div class="sat-meta">응답 24명 평균</div>
+        </div>
+      </div>
+
+      <div class="display-panel">
+        <div class="panel-title">참여자들의 목소리</div>
+        <div class="bubble-grid" id="bubble-grid"></div>
+      </div>
+    </div>
+
+    <div class="qr-hint">
+      <strong>지금 응답해보세요!</strong> 부스에 비치된 QR코드를 스캔하거나, 가까이 계신 운영진에게 링크를 받으세요.
+    </div>
+  </section>
+</div>
+
+<script>
+const DIVISIONS = [
+  { code: 'community', num: 1, codename: '영화로 모이다',     title: '커뮤니티 영화상영회',  cls: 'b-community' },
+  { code: 'marketing', num: 2, codename: '맛집과 영화사이',   title: '맛집 키링 굿즈 팝업',  cls: 'b-marketing' },
+  { code: 'branding',  num: 3, codename: '시네호와 네컷',     title: '캐릭터 + 추억형 체험', cls: 'b-branding' },
+  { code: 'infra',     num: 4, codename: '골목이 영화가 되다', title: '골목 미디어파사드',    cls: 'b-infra' },
+  { code: 'content',   num: 5, codename: '무비팅',           title: '영화 취향 매칭 소개팅', cls: 'b-content' }
+];
+
+// 샘플 데이터
+const sampleRanks = [
+  { codename: '맛집과 영화사이', title: '맛집 키링 굿즈 팝업',  count: 8, pct: 33, cls: 'b-marketing' },
+  { codename: '시네호와 네컷',   title: '캐릭터 + 추억형 체험', count: 6, pct: 25, cls: 'b-branding' },
+  { codename: '무비팅',          title: '영화 취향 매칭 소개팅', count: 5, pct: 21, cls: 'b-content' },
+  { codename: '골목이 영화가 되다', title: '골목 미디어파사드',  count: 3, pct: 13, cls: 'b-infra' },
+  { codename: '영화로 모이다',   title: '커뮤니티 영화상영회',  count: 2, pct: 8,  cls: 'b-community' }
+];
+
+const sampleBubbles = [
+  { codename: '맛집과 영화사이', cls: 'b-marketing', time: '17:24', text: '옛날 전주가 생각나고 키링이 갖고싶어져요... 소장가치각', idea: '거리에 영화와 관련된 상점들이 생기면 생기가 돋을것 같아요' },
+  { codename: '영화로 모이다',   cls: 'b-community', time: '13:15', text: '영화관에서 보지 않더라도, 같은 영화를 보고 모임을 만들어서 얘기나눌수 있는것만으로도 정체성이 생길것 같다.' },
+  { codename: '골목이 영화가 되다', cls: 'b-infra',  time: '12:40', text: '명동 안가도 되나요? 스케일만 보장된다면....' },
+  { codename: '맛집과 영화사이', cls: 'b-marketing', time: '12:38', text: '다른 더 유명한 맛집들도 키링으로 만들어주세요!' },
+  { codename: '시네호와 네컷',   cls: 'b-branding',  time: '12:33', text: '캐릭터의 의미를 알 수 있으면 좋을 것 같아요. 무엇을 상징했는지....?' },
+  { codename: '무비팅',          cls: 'b-content',   time: '12:26', text: '전주의 솔로들 부럽다!', idea: '전주에 살고싶은 솔로들도 참여할 수 있게, 나는 솔로처럼 기수별로 모집하면 좋겠어요.' },
+  { codename: '맛집과 영화사이', cls: 'b-marketing', time: '12:23', text: '추억의 맛집 말고도 영화제와 관련있는 포스터 키링이 만들어져도 좋을 것 같아요.', idea: '다른 국제영화제들과 콜라보해도 좋겠어요.' }
+];
+
+// ========== 디자인 정의 ==========
+const designs = {
+  A: {
+    title: '시안 A — 따뜻한 크림 + 레드 스펙트럼',
+    desc: '차분한 수공예/공방 느낌. 우드 톤 부스에 가장 자연스럽게 어우러짐. 분과 색: 황토/레드/와인/다크우드/로즈.',
+    bg: '#F2E8D5', card: '#FFFCF6', text: '#2A1810', satBox: '#FBF1EC',
+    accent: '#C8102E',
+    divisions: {
+      '영화로 모이다':   '#B47A35',
+      '맛집과 영화사이': '#C8102E',
+      '시네호와 네컷':   '#7B2C3F',
+      '골목이 영화가 되다': '#5C3924',
+      '무비팅':         '#A04A55'
+    },
+    bubbles: {
+      community: { bg: '#FAF1E0', border: '#B47A35', text: '#4A2F0D' },
+      marketing: { bg: '#FBEFE9', border: '#C8102E', text: '#4A1219' },
+      branding:  { bg: '#F8EDE9', border: '#7B2C3F', text: '#3A1622' },
+      infra:     { bg: '#F5EFE6', border: '#5C3924', text: '#2D1B11' },
+      content:   { bg: '#FAEEE8', border: '#A04A55', text: '#3F1D24' }
+    }
+  },
+  B: {
+    title: '시안 B — 다크 우드 + 단일 레드 (모노톤)',
+    desc: '가장 미니멀, "전시장 인쇄물" 같은 통일감. 분과 구분은 컬러 농도 차이로만. 격조 있는 행사 느낌.',
+    bg: '#E8DCC4', card: '#FBF4E2', text: '#1F140A', satBox: '#F0E6D0',
+    accent: '#C8102E',
+    divisions: {
+      '맛집과 영화사이': '#C8102E',
+      '시네호와 네컷':   '#A8253E',
+      '무비팅':         '#8B2030',
+      '골목이 영화가 되다': '#6E1A28',
+      '영화로 모이다':   '#52131F'
+    },
+    bubbles: {
+      community: { bg: '#F5EBD0', border: '#52131F', text: '#1F140A' },
+      marketing: { bg: '#F5EBD0', border: '#C8102E', text: '#1F140A' },
+      branding:  { bg: '#F5EBD0', border: '#A8253E', text: '#1F140A' },
+      infra:     { bg: '#F5EBD0', border: '#6E1A28', text: '#1F140A' },
+      content:   { bg: '#F5EBD0', border: '#8B2030', text: '#1F140A' }
+    }
+  },
+  C: {
+    title: '시안 C — 살짝 따뜻한 화이트 + 흙톤',
+    desc: '현재 디자인 인상 유지하면서 무지개만 제거. 변경 폭 가장 작음. 인프라 분과만 모스 그린으로 변화 한 줌.',
+    bg: '#FAF7F2', card: '#FFFFFF', text: '#1A1A1A', satBox: '#FBF1EC',
+    accent: '#C8102E',
+    divisions: {
+      '영화로 모이다':   '#D9923B',
+      '맛집과 영화사이': '#C8102E',
+      '시네호와 네컷':   '#A0466F',
+      '골목이 영화가 되다': '#7A8B5E',
+      '무비팅':         '#C16E5C'
+    },
+    bubbles: {
+      community: { bg: '#FCF3E6', border: '#D9923B', text: '#5A3A12' },
+      marketing: { bg: '#FCEBEC', border: '#C8102E', text: '#5A1219' },
+      branding:  { bg: '#F7ECF1', border: '#A0466F', text: '#4A1F37' },
+      infra:     { bg: '#F0F2EA', border: '#7A8B5E', text: '#2E3922' },
+      content:   { bg: '#FBE9E5', border: '#C16E5C', text: '#5A2820' }
+    }
+  },
+  D: {
+    title: '시안 D — 시네마틱 다크',
+    desc: '영화제 시상식/포스터 느낌. 부스 조명이 어두우면 무대처럼 빛남. 골드/레드/카퍼/로즈로 어두운 배경 위에서 빛나는 워밍 컬러.',
+    bg: '#1F1815', card: '#2D2520', text: '#F5EAD0', satBox: '#3A2E27',
+    accent: '#E84452',
+    divisions: {
+      '영화로 모이다':   '#D9A547',
+      '맛집과 영화사이': '#E84452',
+      '시네호와 네컷':   '#B14A6E',
+      '골목이 영화가 되다': '#C76A3F',
+      '무비팅':         '#D67782'
+    },
+    bubbles: {
+      community: { bg: '#2D2520', border: '#D9A547', text: '#F5EAD0' },
+      marketing: { bg: '#2D2520', border: '#E84452', text: '#F5EAD0' },
+      branding:  { bg: '#2D2520', border: '#B14A6E', text: '#F5EAD0' },
+      infra:     { bg: '#2D2520', border: '#C76A3F', text: '#F5EAD0' },
+      content:   { bg: '#2D2520', border: '#D67782', text: '#F5EAD0' }
+    }
+  }
+};
+
+// ========== 렌더 ==========
+function renderRanks(d) {
+  const max = Math.max(...sampleRanks.map(r => r.count), 1);
+  document.getElementById('ranking-list').innerHTML = sampleRanks.map((r, i) => `
+    <div class="rank-item">
+      <div class="rank-header">
+        <div class="rank-left">
+          <span class="rank-pos">${i+1}위</span>
+          <span class="rank-name">${r.codename}</span>
+          <span class="rank-codename">${r.title}</span>
+        </div>
+        <div class="rank-stats"><strong>${r.count}</strong>표 · ${r.pct}%</div>
+      </div>
+      <div class="bar-track"><div class="bar-fill" style="width:${(r.count/max)*100}%; background:${d.divisions[r.codename]};"></div></div>
+    </div>
+  `).join('');
+}
+
+function renderBubbles() {
+  document.getElementById('bubble-grid').innerHTML = sampleBubbles.map(b => `
+    <div class="bubble ${b.cls}">
+      <div class="bubble-tag"><span>${b.codename}</span><span class="time">${b.time}</span></div>
+      <div class="bubble-text">${b.text}</div>
+      ${b.idea ? `<div class="bubble-idea"><div class="bubble-idea-label">💡 추가 아이디어</div>${b.idea}</div>` : ''}
+    </div>
+  `).join('');
+}
+
+function applyDesign(name) {
+  const d = designs[name];
+  // 본문/카드 색상
+  document.getElementById('display-mode').style.background = d.bg;
+  document.querySelectorAll('.display-header, .display-panel').forEach(el => {
+    el.style.background = d.card; el.style.color = d.text;
+  });
+  document.querySelector('.display-title').style.color = d.text;
+  document.querySelector('.display-header').style.borderBottomColor = d.accent;
+  // 사이드바·박스
+  const satBox = document.querySelector('.satisfaction-box');
+  satBox.style.background = d.satBox;
+  // 동적 색
+  let s = document.getElementById('design-style');
+  if (!s) { s = document.createElement('style'); s.id = 'design-style'; document.head.appendChild(s); }
+  s.textContent = `
+    .display-counter { background: ${d.accent} !important; }
+    .panel-title::before { background: ${d.accent} !important; }
+    .sat-value, .sat-stars, .rank-pos, .rank-stats strong { color: ${d.accent} !important; }
+    .qr-hint { background: ${d.accent} !important; }
+    .b-community { background: ${d.bubbles.community.bg} !important; border-color: ${d.bubbles.community.border} !important; color: ${d.bubbles.community.text} !important; }
+    .b-marketing { background: ${d.bubbles.marketing.bg} !important; border-color: ${d.bubbles.marketing.border} !important; color: ${d.bubbles.marketing.text} !important; }
+    .b-branding  { background: ${d.bubbles.branding.bg} !important; border-color: ${d.bubbles.branding.border} !important; color: ${d.bubbles.branding.text} !important; }
+    .b-infra     { background: ${d.bubbles.infra.bg} !important; border-color: ${d.bubbles.infra.border} !important; color: ${d.bubbles.infra.text} !important; }
+    .b-content   { background: ${d.bubbles.content.bg} !important; border-color: ${d.bubbles.content.border} !important; color: ${d.bubbles.content.text} !important; }
+  `;
+  renderRanks(d);
+  renderBubbles();
+  // 정보 카드 갱신
+  document.getElementById('design-info').innerHTML = `<h2>${d.title}</h2><p>${d.desc}</p>`;
+}
+
+// 토글 버튼
+document.querySelectorAll('.design-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.design-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    applyDesign(btn.dataset.design);
+  });
+});
+
+// 초기 렌더 (시안 A)
+applyDesign('A');
+</script>
+</body>
+</html>
