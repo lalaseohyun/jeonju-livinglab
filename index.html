@@ -725,9 +725,9 @@
   <div class="select-card">
     <h1>🎬 전주 영화의 거리 리빙랩</h1>
     <p>만족도 조사 시스템 — 사용할 모드를 선택해주세요</p>
-    <a href="?mode=respond">📝 응답 화면<small>참여자 — 태블릿/스마트폰에 띄우기</small></a>
-    <a href="?mode=display">📊 결과 화면<small>실시간 결과 — 부스 모니터에 띄우기</small></a>
-    <a href="?mode=admin">⚙️ 관리자 화면<small>CSV 다운로드, 응답 관리</small></a>
+    <a href="?mode=respond" onclick="location.search='?mode=respond';return false;">📝 응답 화면<small>참여자 — 태블릿/스마트폰에 띄우기</small></a>
+    <a href="?mode=display" onclick="location.search='?mode=display';return false;">📊 결과 화면<small>실시간 결과 — 부스 모니터에 띄우기</small></a>
+    <a href="?mode=admin" onclick="location.search='?mode=admin';return false;">⚙️ 관리자 화면<small>CSV 다운로드, 응답 관리</small></a>
   </div>
 </section>
 
@@ -913,23 +913,33 @@ function initFirebase() {
 initFirebase();
 
 /* ============================================================
-   모드 분기
+   모드 분기 (DOM 로드 후 실행)
    ============================================================ */
-const params = new URLSearchParams(window.location.search);
-const mode = params.get('mode');
+function initMode() {
+  const params = new URLSearchParams(window.location.search);
+  const mode = params.get('mode');
+  console.log('🎯 모드 분기 시작:', mode);
 
-document.querySelectorAll('.mode-section').forEach(s => s.classList.remove('active'));
-if (mode === 'respond') {
-  document.getElementById('respond-mode').classList.add('active');
-  initRespond();
-} else if (mode === 'display') {
-  document.getElementById('display-mode').classList.add('active');
-  initDisplay();
-} else if (mode === 'admin') {
-  document.getElementById('admin-mode').classList.add('active');
-  initAdmin();
+  document.querySelectorAll('.mode-section').forEach(s => s.classList.remove('active'));
+  if (mode === 'respond') {
+    document.getElementById('respond-mode').classList.add('active');
+    initRespond();
+  } else if (mode === 'display') {
+    document.getElementById('display-mode').classList.add('active');
+    initDisplay();
+  } else if (mode === 'admin') {
+    document.getElementById('admin-mode').classList.add('active');
+    initAdmin();
+  } else {
+    document.getElementById('select-mode').classList.add('active');
+  }
+  console.log('✅ 모드 분기 완료');
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initMode);
 } else {
-  document.getElementById('select-mode').classList.add('active');
+  initMode();
 }
 
 /* ============================================================
