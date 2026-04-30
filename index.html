@@ -8,19 +8,21 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
   :root {
+    /* 시안 B — 다크 우드 + 단일 레드 (모노톤) */
     --red: #C8102E;
     --red-dark: #9A0C24;
-    --red-light: #FCEBEB;
-    --red-soft: #FFF5F6;
-    --bg: #FAFAFA;
-    --white: #FFFFFF;
-    --text: #1A1A1A;
-    --text-mute: #666666;
-    --text-soft: #999999;
-    --border: #E5E5E5;
-    --border-soft: #F0F0F0;
-    --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
-    --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+    --red-light: #F0E6D0;
+    --red-soft: #F0E6D0;
+    --bg: #E8DCC4;          /* 우드/리넨 배경 */
+    --white: #FBF4E2;       /* 베이지 카드 */
+    --cream: #F5EBD0;       /* 통일 말풍선 베이스 */
+    --text: #1F140A;        /* 따뜻한 거의 블랙 */
+    --text-mute: #5C4F3A;
+    --text-soft: #8B7B62;
+    --border: #DCC9A4;
+    --border-soft: #ECE0C5;
+    --shadow-sm: 0 1px 3px rgba(60,40,20,0.08);
+    --shadow-md: 0 4px 12px rgba(60,40,20,0.12);
   }
   body {
     font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Pretendard", "Noto Sans KR", sans-serif;
@@ -72,14 +74,14 @@
   .header-sub .dot {
     display: inline-block;
     width: 6px; height: 6px;
-    background: white;
+    background: var(--white);
     border-radius: 50%;
     animation: pulse 1.5s ease-in-out infinite;
   }
   @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
 
   .question {
-    background: white;
+    background: var(--white);
     border-radius: 16px;
     padding: 20px 18px;
     margin-bottom: 14px;
@@ -116,7 +118,7 @@
     gap: 10px;
   }
   .division-card {
-    background: white;
+    background: var(--white);
     border: 2px solid var(--border);
     border-radius: 12px;
     padding: 14px 14px;
@@ -135,7 +137,7 @@
   .division-num {
     width: 30px; height: 30px;
     border-radius: 50%;
-    background: #F5F5F5;
+    background: var(--border-soft);
     color: var(--text-mute);
     display: flex;
     align-items: center;
@@ -199,7 +201,7 @@
     padding: 12px 14px;
     font-size: 15px;
     font-family: inherit;
-    background: white;
+    background: var(--white);
     color: var(--text);
     resize: none;
     transition: border-color 0.15s;
@@ -313,7 +315,7 @@
     margin-bottom: 30px;
   }
   .thanks-btn {
-    background: white;
+    background: var(--white);
     color: var(--red);
     border: 2px solid var(--red);
     border-radius: 12px;
@@ -350,7 +352,7 @@
   }
   .nav-btn:active { transform: scale(0.98); }
   .nav-btn.prev {
-    background: white;
+    background: var(--white);
     color: var(--text-mute);
     border: 1.5px solid var(--border);
     flex: 0 0 110px;
@@ -369,7 +371,7 @@
 
   /* 인트로 페이지 */
   .intro-card {
-    background: white;
+    background: var(--white);
     border-radius: 16px;
     padding: 36px 24px 28px;
     margin-top: 8px;
@@ -431,7 +433,7 @@
     justify-content: space-between;
     align-items: center;
     padding: 14px 24px;
-    background: white;
+    background: var(--white);
     border-radius: 14px;
     margin-bottom: 18px;
     box-shadow: var(--shadow-sm);
@@ -458,7 +460,7 @@
   .display-counter .live-dot {
     display: inline-block;
     width: 8px; height: 8px;
-    background: white;
+    background: var(--white);
     border-radius: 50%;
     margin-right: 8px;
     animation: pulse 1.5s ease-in-out infinite;
@@ -470,7 +472,7 @@
     gap: 18px;
   }
   .display-panel {
-    background: white;
+    background: var(--white);
     border-radius: 14px;
     padding: 22px;
     box-shadow: var(--shadow-sm);
@@ -531,7 +533,7 @@
   }
   .bar-track {
     height: 18px;
-    background: #F5F5F5;
+    background: var(--border-soft);
     border-radius: 6px;
     overflow: hidden;
   }
@@ -624,12 +626,12 @@
     margin-bottom: 2px;
   }
 
-  /* 분과별 색상 */
-  .b-community { background: #FFF4E6; border-color: #E8941F; color: #6B4011; }
-  .b-marketing { background: #FFE9E9; border-color: #E24B4A; color: #791F1F; }
-  .b-branding  { background: #F4E9F7; border-color: #9C5BB1; color: #4A1D5C; }
-  .b-infra     { background: #E8F0FB; border-color: #378ADD; color: #0C447C; }
-  .b-content   { background: #FFE9F0; border-color: #D4537E; color: #72243E; }
+  /* 분과별 색상 — 시안 B: 통일 베이지 배경 + 분과별 좌측 보더로만 구분 */
+  .b-community { background: var(--cream); border-color: #52131F; color: var(--text); }
+  .b-marketing { background: var(--cream); border-color: #C8102E; color: var(--text); }
+  .b-branding  { background: var(--cream); border-color: #A8253E; color: var(--text); }
+  .b-infra     { background: var(--cream); border-color: #6E1A28; color: var(--text); }
+  .b-content   { background: var(--cream); border-color: #8B2030; color: var(--text); }
 
   .empty-state {
     grid-column: 1 / -1;
@@ -658,7 +660,7 @@
     padding: 40px 20px;
   }
   .admin-card {
-    background: white;
+    background: var(--white);
     border-radius: 16px;
     padding: 28px;
     box-shadow: var(--shadow-md);
@@ -692,7 +694,7 @@
     font-family: inherit;
   }
   .admin-btn.secondary {
-    background: white;
+    background: var(--white);
     color: var(--red);
     border: 1.5px solid var(--red);
   }
@@ -760,7 +762,7 @@
      모든 모드에서 select-mode가 보이던 버그 수정 (2026-04-30) */
   #select-mode.active { display: flex; }
   .select-card {
-    background: white;
+    background: var(--white);
     border-radius: 16px;
     padding: 32px;
     box-shadow: var(--shadow-md);
@@ -775,7 +777,7 @@
   .select-card p { color: var(--text-mute); margin-bottom: 20px; font-size: 14px; }
   .select-card a {
     display: block;
-    background: white;
+    background: var(--white);
     border: 2px solid var(--border);
     border-radius: 12px;
     padding: 16px;
@@ -917,7 +919,7 @@
 
   /* 전체화면 토글 버튼 */
   .fullscreen-btn {
-    background: white;
+    background: var(--white);
     color: var(--red);
     border: 1.5px solid var(--red);
     border-radius: 999px;
@@ -1152,11 +1154,14 @@ const FIREBASE_CONFIG = {
 const ADMIN_PASSWORD = "2026";  // 👈 관리자 비밀번호 (편한 걸로 바꾸세요)
 
 const DIVISIONS = [
-  { code: 'community', num: 1, codename: '영화로 모이다', title: '커뮤니티 영화상영회', desc: "'영화 속의 전주' 커뮤니티 영화상영회 운영", color: '#E8941F', cls: 'b-community' },
-  { code: 'marketing', num: 2, codename: '맛집과 영화사이', title: '맛집 키링 굿즈 팝업', desc: '전주 대표맛집 TOP5 키링 굿즈 + 팝업스토어', color: '#E24B4A', cls: 'b-marketing' },
-  { code: 'branding',  num: 3, codename: '시네호와 네컷',   title: '캐릭터 + 추억형 체험',  desc: '영화의 거리 캐릭터 개발, 추억형 체험콘텐츠', color: '#9C5BB1', cls: 'b-branding' },
-  { code: 'infra',     num: 4, codename: '골목이 영화가 되다', title: '골목 미디어파사드', desc: '영화의 거리 골목 미디어파사드 조성', color: '#378ADD', cls: 'b-infra' },
-  { code: 'content',   num: 5, codename: '무비팅',           title: '영화 취향 매칭 소개팅', desc: '영화로 만난 인연, 무비팅 소개팅 프로그램', color: '#D4537E', cls: 'b-content' }
+  /* 시안 B — 모노 레드 스펙트럼 (1번 가장 진하게 → 5번 점점 옅게가 아니라
+     분과 정체성에 고정 매핑. 막대그래프에서 모두 비슷한 레드로 보이지만
+     좌측 보더로 분과별로 미세 구분됨) */
+  { code: 'community', num: 1, codename: '영화로 모이다', title: '커뮤니티 영화상영회', desc: "'영화 속의 전주' 커뮤니티 영화상영회 운영", color: '#52131F', cls: 'b-community' },
+  { code: 'marketing', num: 2, codename: '맛집과 영화사이', title: '맛집 키링 굿즈 팝업', desc: '전주 대표맛집 TOP5 키링 굿즈 + 팝업스토어', color: '#C8102E', cls: 'b-marketing' },
+  { code: 'branding',  num: 3, codename: '시네호와 네컷',   title: '캐릭터 + 추억형 체험',  desc: '영화의 거리 캐릭터 개발, 추억형 체험콘텐츠', color: '#A8253E', cls: 'b-branding' },
+  { code: 'infra',     num: 4, codename: '골목이 영화가 되다', title: '골목 미디어파사드', desc: '영화의 거리 골목 미디어파사드 조성', color: '#6E1A28', cls: 'b-infra' },
+  { code: 'content',   num: 5, codename: '무비팅',           title: '영화 취향 매칭 소개팅', desc: '영화로 만난 인연, 무비팅 소개팅 프로그램', color: '#8B2030', cls: 'b-content' }
 ];
 
 /* ============================================================
