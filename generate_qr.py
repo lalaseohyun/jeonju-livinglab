@@ -24,10 +24,10 @@ img = qr.make_image(fill_color="#1A1A1A", back_color="white")
 img.save("qr-respond.png")
 print(f"[OK] qr-respond.png saved (size: {img.size[0]}x{img.size[1]})")
 
-# 컨셉 컬러 — 레드 (#C8102E)
+# 컨셉 컬러 — 비비드 레드 (#FF0000)
 # 일부 구형 스캐너는 어두운 색 외엔 인식률이 떨어질 수 있음 → 보조용으로만 사용
-img_red = qr.make_image(fill_color="#C8102E", back_color="white")
+img_red = qr.make_image(fill_color="#FF0000", back_color="white")
 img_red.save("qr-respond-red.png")
-print(f"[OK] qr-respond-red.png saved (red brand color)")
+print(f"[OK] qr-respond-red.png saved (vivid red #FF0000)")
 
 print(f"\nURL: {URL}")
