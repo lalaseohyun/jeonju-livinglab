@@ -797,34 +797,36 @@
     margin-top: 4px;
   }
 
-  /* 데스크톱 결과화면 폰트 대폭 키우기 (방문객 가시성 ↑) */
+  /* 데스크톱 결과화면 폰트 대폭 키우기 + 굵기 강화 (방문객 가시성 ↑) */
   @media (min-width: 1200px) {
-    .display-title { font-size: 40px; }
-    .display-title small { font-size: 18px; margin-left: 14px; }
-    .display-counter { font-size: 28px; padding: 14px 28px; }
-    .panel-title { font-size: 28px; }
-    .panel-title::before { width: 6px; height: 24px; }
-    .rank-pos { font-size: 22px; min-width: 40px; }
-    .rank-name { font-size: 26px; }
-    .rank-codename { font-size: 16px; margin-left: 10px; }
-    .rank-stats { font-size: 20px; }
-    .rank-stats strong { font-size: 28px; margin-right: 6px; }
-    .bar-track { height: 32px; border-radius: 10px; }
-    .bar-fill { border-radius: 10px; }
-    .ranking-list { gap: 24px; }
+    .display-title { font-size: 42px; font-weight: 900; letter-spacing: -1px; }
+    .display-title small { font-size: 18px; margin-left: 14px; font-weight: 600; }
+    .display-counter { font-size: 28px; padding: 14px 28px; font-weight: 800; }
+    .panel-title { font-size: 30px; font-weight: 800; }
+    .panel-title::before { width: 6px; height: 26px; }
+    /* 분과 인기 순위 — 추가 확대 + 굵게 */
+    .rank-pos { font-size: 28px; min-width: 50px; font-weight: 800; }
+    .rank-name { font-size: 32px; font-weight: 800; }
+    .rank-codename { font-size: 18px; margin-left: 10px; font-weight: 500; }
+    .rank-stats { font-size: 24px; font-weight: 700; }
+    .rank-stats strong { font-size: 34px; margin-right: 6px; font-weight: 900; }
+    .bar-track { height: 36px; border-radius: 12px; }
+    .bar-fill { border-radius: 12px; }
+    .ranking-list { gap: 26px; }
     .satisfaction-box { padding: 28px; margin-top: 32px; }
-    .sat-label { font-size: 18px; margin-bottom: 10px; }
-    .sat-value { font-size: 64px; line-height: 1.1; }
+    .sat-label { font-size: 18px; margin-bottom: 10px; font-weight: 700; }
+    .sat-value { font-size: 64px; line-height: 1.1; font-weight: 900; }
     .sat-stars { font-size: 28px; margin-top: 6px; letter-spacing: 4px; }
-    .sat-meta { font-size: 14px; margin-top: 8px; }
+    .sat-meta { font-size: 14px; margin-top: 8px; font-weight: 600; }
+    /* 말풍선 — 사이즈 유지, 굵기만 살짝 강화 */
     .bubble { padding: 18px; border-radius: 12px; border-left-width: 5px; }
-    .bubble-tag { font-size: 14px; margin-bottom: 8px; }
-    .bubble-text { font-size: 20px; line-height: 1.55; }
-    .bubble-idea { font-size: 17px; margin-top: 10px; padding-top: 10px; }
-    .bubble-idea-label { font-size: 13px; margin-bottom: 4px; }
+    .bubble-tag { font-size: 14px; margin-bottom: 8px; font-weight: 800; }
+    .bubble-text { font-size: 20px; line-height: 1.55; font-weight: 600; }
+    .bubble-idea { font-size: 17px; margin-top: 10px; padding-top: 10px; font-weight: 500; }
+    .bubble-idea-label { font-size: 13px; margin-bottom: 4px; font-weight: 800; }
     .bubble-grid { gap: 14px; max-height: none; }
-    .qr-hint { font-size: 22px; padding: 22px; margin-top: 28px; }
-    .qr-hint strong { font-size: 26px; }
+    .qr-hint { font-size: 22px; padding: 22px; margin-top: 28px; font-weight: 700; }
+    .qr-hint strong { font-size: 26px; font-weight: 900; }
   }
 
   /* 전광판 전체화면 모드 (16:9 LED/모니터 송출용) */
@@ -841,9 +843,9 @@
     margin-bottom: 1.2vw;
     border-bottom-width: 6px;
   }
-  #display-mode:fullscreen .display-title { font-size: 3.2vw; }
-  #display-mode:fullscreen .display-title small { font-size: 1.4vw; margin-left: 1vw; }
-  #display-mode:fullscreen .display-counter { font-size: 2.2vw; padding: 1vw 2vw; }
+  #display-mode:fullscreen .display-title { font-size: 3.4vw; font-weight: 900; letter-spacing: -0.05vw; }
+  #display-mode:fullscreen .display-title small { font-size: 1.4vw; margin-left: 1vw; font-weight: 600; }
+  #display-mode:fullscreen .display-counter { font-size: 2.2vw; padding: 1vw 2vw; font-weight: 800; }
   #display-mode:fullscreen .display-counter .live-dot { width: 1vw; height: 1vw; margin-right: 0.8vw; }
   #display-mode:fullscreen .display-grid {
     flex: 1;
@@ -857,21 +859,23 @@
     flex-direction: column;
     overflow: hidden;
   }
-  #display-mode:fullscreen .panel-title { font-size: 2vw; margin-bottom: 1.5vw; }
-  #display-mode:fullscreen .panel-title::before { width: 0.4vw; height: 1.6vw; }
-  #display-mode:fullscreen .ranking-list { gap: 1.4vw; }
-  #display-mode:fullscreen .rank-pos { font-size: 1.6vw; min-width: 3vw; }
-  #display-mode:fullscreen .rank-name { font-size: 2vw; }
-  #display-mode:fullscreen .rank-codename { font-size: 1.1vw; margin-left: 0.8vw; }
-  #display-mode:fullscreen .rank-stats { font-size: 1.5vw; }
-  #display-mode:fullscreen .rank-stats strong { font-size: 2vw; margin-right: 0.4vw; }
-  #display-mode:fullscreen .bar-track { height: 2.4vw; border-radius: 0.8vw; }
-  #display-mode:fullscreen .bar-fill { border-radius: 0.8vw; }
+  #display-mode:fullscreen .panel-title { font-size: 2.2vw; margin-bottom: 1.5vw; font-weight: 800; }
+  #display-mode:fullscreen .panel-title::before { width: 0.4vw; height: 1.8vw; }
+  /* 분과 인기 순위 — 풀스크린에서도 추가 확대 + 굵게 */
+  #display-mode:fullscreen .ranking-list { gap: 1.6vw; }
+  #display-mode:fullscreen .rank-pos { font-size: 2vw; min-width: 3.6vw; font-weight: 800; }
+  #display-mode:fullscreen .rank-name { font-size: 2.4vw; font-weight: 800; }
+  #display-mode:fullscreen .rank-codename { font-size: 1.3vw; margin-left: 0.8vw; font-weight: 500; }
+  #display-mode:fullscreen .rank-stats { font-size: 1.7vw; font-weight: 700; }
+  #display-mode:fullscreen .rank-stats strong { font-size: 2.5vw; margin-right: 0.4vw; font-weight: 900; }
+  #display-mode:fullscreen .bar-track { height: 2.8vw; border-radius: 0.9vw; }
+  #display-mode:fullscreen .bar-fill { border-radius: 0.9vw; }
   #display-mode:fullscreen .satisfaction-box { padding: 1.8vw; margin-top: auto; }
-  #display-mode:fullscreen .sat-label { font-size: 1.3vw; margin-bottom: 0.6vw; }
-  #display-mode:fullscreen .sat-value { font-size: 4.5vw; line-height: 1; }
+  #display-mode:fullscreen .sat-label { font-size: 1.3vw; margin-bottom: 0.6vw; font-weight: 700; }
+  #display-mode:fullscreen .sat-value { font-size: 4.5vw; line-height: 1; font-weight: 900; }
   #display-mode:fullscreen .sat-stars { font-size: 2.2vw; letter-spacing: 0.4vw; margin-top: 0.4vw; }
-  #display-mode:fullscreen .sat-meta { font-size: 1vw; margin-top: 0.5vw; }
+  #display-mode:fullscreen .sat-meta { font-size: 1vw; margin-top: 0.5vw; font-weight: 600; }
+  /* 말풍선 — 자동 스크롤 + 스크롤바 숨김 */
   #display-mode:fullscreen .bubble-grid {
     flex: 1;
     gap: 0.8vw;
@@ -879,22 +883,27 @@
     overflow: hidden;
     max-height: none;
   }
+  #display-mode:fullscreen .bubble-grid::-webkit-scrollbar { display: none; }
   #display-mode:fullscreen .bubble {
     padding: 1.1vw;
     border-radius: 0.8vw;
     border-left-width: 0.4vw;
   }
-  #display-mode:fullscreen .bubble-tag { font-size: 1vw; margin-bottom: 0.5vw; }
-  #display-mode:fullscreen .bubble-text { font-size: 1.5vw; line-height: 1.5; }
-  #display-mode:fullscreen .bubble-idea { font-size: 1.2vw; margin-top: 0.6vw; padding-top: 0.6vw; }
-  #display-mode:fullscreen .bubble-idea-label { font-size: 0.9vw; }
+  #display-mode:fullscreen .bubble-tag { font-size: 1vw; margin-bottom: 0.5vw; font-weight: 800; }
+  #display-mode:fullscreen .bubble-text { font-size: 1.5vw; line-height: 1.5; font-weight: 600; }
+  #display-mode:fullscreen .bubble-idea { font-size: 1.2vw; margin-top: 0.6vw; padding-top: 0.6vw; font-weight: 500; }
+  #display-mode:fullscreen .bubble-idea-label { font-size: 0.9vw; font-weight: 800; }
   #display-mode:fullscreen .qr-hint {
     font-size: 1.6vw;
     padding: 1.2vw;
     margin-top: 1.2vw;
+    font-weight: 700;
   }
-  #display-mode:fullscreen .qr-hint strong { font-size: 2vw; }
+  #display-mode:fullscreen .qr-hint strong { font-size: 2vw; font-weight: 900; }
   #display-mode:fullscreen .fullscreen-btn { display: none; }
+  /* 일반 모드에서도 자동 스크롤 시 스크롤바 숨김 (마우스 호버 시만 살짝 보임) */
+  .bubble-grid.auto-scroll::-webkit-scrollbar { width: 0; }
+  .bubble-grid.auto-scroll { scrollbar-width: none; }
 
   /* 전체화면 토글 버튼 */
   .fullscreen-btn {
@@ -1421,6 +1430,28 @@ function initDisplay() {
   document.addEventListener('fullscreenchange', () => {
     fsBtn.textContent = document.fullscreenElement ? '⛶ 전체화면 종료 (ESC)' : '⛶ 전체화면';
   });
+
+  // 참여자들의 목소리 자동 스크롤 — 끝에 닿으면 잠시 멈춘 뒤 처음으로 부드럽게 복귀
+  const bubbleGrid = document.getElementById('bubble-grid');
+  bubbleGrid.classList.add('auto-scroll'); // 스크롤바 숨김
+  const SCROLL_PX_PER_FRAME = 0.6;  // 약 36px/sec @ 60fps — 천천히 자연스럽게
+  const PAUSE_AT_END_MS = 2500;     // 끝에 도달했을 때 멈춤 시간
+  const RESET_DELAY_MS = 2000;      // 멈춘 뒤 처음으로 돌아가기까지
+  let pausedUntil = 0;
+  function autoScrollTick(now) {
+    requestAnimationFrame(autoScrollTick);
+    if (now < pausedUntil) return;
+    // 내용이 안 넘치면 스크롤할 게 없음
+    if (bubbleGrid.scrollHeight <= bubbleGrid.clientHeight + 4) return;
+    // 끝까지 갔으면 잠시 멈췄다가 처음으로 부드럽게 복귀
+    if (bubbleGrid.scrollTop + bubbleGrid.clientHeight >= bubbleGrid.scrollHeight - 1) {
+      pausedUntil = now + PAUSE_AT_END_MS;
+      setTimeout(() => bubbleGrid.scrollTo({ top: 0, behavior: 'smooth' }), RESET_DELAY_MS);
+    } else {
+      bubbleGrid.scrollTop += SCROLL_PX_PER_FRAME;
+    }
+  }
+  requestAnimationFrame(autoScrollTick);
 
   db.ref('responses').on('value', (snap) => {
     const all = [];
