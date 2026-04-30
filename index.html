@@ -797,16 +797,125 @@
     margin-top: 4px;
   }
 
-  /* 데스크톱 결과화면 폰트 키우기 */
+  /* 데스크톱 결과화면 폰트 대폭 키우기 (방문객 가시성 ↑) */
   @media (min-width: 1200px) {
-    .display-title { font-size: 26px; }
-    .display-counter { font-size: 18px; padding: 10px 22px; }
-    .panel-title { font-size: 18px; }
-    .rank-name { font-size: 17px; }
-    .rank-stats strong { font-size: 18px; }
-    .bar-track { height: 22px; }
-    .sat-value { font-size: 38px; }
-    .bubble-text { font-size: 14px; }
+    .display-title { font-size: 40px; }
+    .display-title small { font-size: 18px; margin-left: 14px; }
+    .display-counter { font-size: 28px; padding: 14px 28px; }
+    .panel-title { font-size: 28px; }
+    .panel-title::before { width: 6px; height: 24px; }
+    .rank-pos { font-size: 22px; min-width: 40px; }
+    .rank-name { font-size: 26px; }
+    .rank-codename { font-size: 16px; margin-left: 10px; }
+    .rank-stats { font-size: 20px; }
+    .rank-stats strong { font-size: 28px; margin-right: 6px; }
+    .bar-track { height: 32px; border-radius: 10px; }
+    .bar-fill { border-radius: 10px; }
+    .ranking-list { gap: 24px; }
+    .satisfaction-box { padding: 28px; margin-top: 32px; }
+    .sat-label { font-size: 18px; margin-bottom: 10px; }
+    .sat-value { font-size: 64px; line-height: 1.1; }
+    .sat-stars { font-size: 28px; margin-top: 6px; letter-spacing: 4px; }
+    .sat-meta { font-size: 14px; margin-top: 8px; }
+    .bubble { padding: 18px; border-radius: 12px; border-left-width: 5px; }
+    .bubble-tag { font-size: 14px; margin-bottom: 8px; }
+    .bubble-text { font-size: 20px; line-height: 1.55; }
+    .bubble-idea { font-size: 17px; margin-top: 10px; padding-top: 10px; }
+    .bubble-idea-label { font-size: 13px; margin-bottom: 4px; }
+    .bubble-grid { gap: 14px; max-height: none; }
+    .qr-hint { font-size: 22px; padding: 22px; margin-top: 28px; }
+    .qr-hint strong { font-size: 26px; }
+  }
+
+  /* 전광판 전체화면 모드 (16:9 LED/모니터 송출용) */
+  #display-mode:fullscreen {
+    width: 100vw;
+    height: 100vh;
+    padding: 1.5vw;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  #display-mode:fullscreen .display-header {
+    padding: 1.2vw 2vw;
+    margin-bottom: 1.2vw;
+    border-bottom-width: 6px;
+  }
+  #display-mode:fullscreen .display-title { font-size: 3.2vw; }
+  #display-mode:fullscreen .display-title small { font-size: 1.4vw; margin-left: 1vw; }
+  #display-mode:fullscreen .display-counter { font-size: 2.2vw; padding: 1vw 2vw; }
+  #display-mode:fullscreen .display-counter .live-dot { width: 1vw; height: 1vw; margin-right: 0.8vw; }
+  #display-mode:fullscreen .display-grid {
+    flex: 1;
+    gap: 1.5vw;
+    grid-template-columns: 5fr 6fr;
+    min-height: 0;
+  }
+  #display-mode:fullscreen .display-panel {
+    padding: 1.8vw;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  #display-mode:fullscreen .panel-title { font-size: 2vw; margin-bottom: 1.5vw; }
+  #display-mode:fullscreen .panel-title::before { width: 0.4vw; height: 1.6vw; }
+  #display-mode:fullscreen .ranking-list { gap: 1.4vw; }
+  #display-mode:fullscreen .rank-pos { font-size: 1.6vw; min-width: 3vw; }
+  #display-mode:fullscreen .rank-name { font-size: 2vw; }
+  #display-mode:fullscreen .rank-codename { font-size: 1.1vw; margin-left: 0.8vw; }
+  #display-mode:fullscreen .rank-stats { font-size: 1.5vw; }
+  #display-mode:fullscreen .rank-stats strong { font-size: 2vw; margin-right: 0.4vw; }
+  #display-mode:fullscreen .bar-track { height: 2.4vw; border-radius: 0.8vw; }
+  #display-mode:fullscreen .bar-fill { border-radius: 0.8vw; }
+  #display-mode:fullscreen .satisfaction-box { padding: 1.8vw; margin-top: auto; }
+  #display-mode:fullscreen .sat-label { font-size: 1.3vw; margin-bottom: 0.6vw; }
+  #display-mode:fullscreen .sat-value { font-size: 4.5vw; line-height: 1; }
+  #display-mode:fullscreen .sat-stars { font-size: 2.2vw; letter-spacing: 0.4vw; margin-top: 0.4vw; }
+  #display-mode:fullscreen .sat-meta { font-size: 1vw; margin-top: 0.5vw; }
+  #display-mode:fullscreen .bubble-grid {
+    flex: 1;
+    gap: 0.8vw;
+    grid-template-columns: 1fr 1fr;
+    overflow: hidden;
+    max-height: none;
+  }
+  #display-mode:fullscreen .bubble {
+    padding: 1.1vw;
+    border-radius: 0.8vw;
+    border-left-width: 0.4vw;
+  }
+  #display-mode:fullscreen .bubble-tag { font-size: 1vw; margin-bottom: 0.5vw; }
+  #display-mode:fullscreen .bubble-text { font-size: 1.5vw; line-height: 1.5; }
+  #display-mode:fullscreen .bubble-idea { font-size: 1.2vw; margin-top: 0.6vw; padding-top: 0.6vw; }
+  #display-mode:fullscreen .bubble-idea-label { font-size: 0.9vw; }
+  #display-mode:fullscreen .qr-hint {
+    font-size: 1.6vw;
+    padding: 1.2vw;
+    margin-top: 1.2vw;
+  }
+  #display-mode:fullscreen .qr-hint strong { font-size: 2vw; }
+  #display-mode:fullscreen .fullscreen-btn { display: none; }
+
+  /* 전체화면 토글 버튼 */
+  .fullscreen-btn {
+    background: white;
+    color: var(--red);
+    border: 1.5px solid var(--red);
+    border-radius: 999px;
+    padding: 8px 18px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    font-family: inherit;
+    margin-left: 12px;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .fullscreen-btn:hover { background: var(--red); color: white; }
+  .display-header-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
   }
 
   /* 모바일 결과화면 — 세로 스택 */
@@ -939,7 +1048,10 @@
 <section id="display-mode" class="mode-section">
   <div class="display-header">
     <div class="display-title">🎬 전주 영화의 거리 아이디어 제안소 <small>실시간 응답 현황</small></div>
-    <div class="display-counter"><span class="live-dot"></span>응답수 <span id="total-count">0</span></div>
+    <div class="display-header-right">
+      <div class="display-counter"><span class="live-dot"></span>응답수 <span id="total-count">0</span></div>
+      <button class="fullscreen-btn" id="fullscreen-btn" title="전광판/모니터에 16:9 전체화면으로 송출">⛶ 전체화면</button>
+    </div>
   </div>
 
   <div class="display-grid">
@@ -948,7 +1060,7 @@
       <div class="ranking-list" id="ranking-list"></div>
 
       <div class="satisfaction-box">
-        <div class="sat-label">전시·홍보 만족도</div>
+        <div class="sat-label">아이디어 제안소 만족도</div>
         <div class="sat-value" id="sat-value">-</div>
         <div class="sat-stars" id="sat-stars">☆☆☆☆☆</div>
         <div class="sat-meta" id="sat-meta">아직 응답이 없어요</div>
@@ -1291,6 +1403,24 @@ function initDisplay() {
   }
 
   document.getElementById('qr-hint').style.display = 'block';
+
+  // 전광판/모니터 송출용 16:9 전체화면 토글
+  const fsBtn = document.getElementById('fullscreen-btn');
+  const displayEl = document.getElementById('display-mode');
+  fsBtn.addEventListener('click', () => {
+    if (!document.fullscreenElement) {
+      const req = displayEl.requestFullscreen
+        || displayEl.webkitRequestFullscreen
+        || displayEl.msRequestFullscreen;
+      if (req) req.call(displayEl).catch(err => alert('전체화면 진입 실패: ' + err.message));
+    } else {
+      (document.exitFullscreen || document.webkitExitFullscreen || document.msExitFullscreen).call(document);
+    }
+  });
+  // ESC 등으로 전체화면 종료될 때 버튼 라벨 동기화 (필요시 확장 여지)
+  document.addEventListener('fullscreenchange', () => {
+    fsBtn.textContent = document.fullscreenElement ? '⛶ 전체화면 종료 (ESC)' : '⛶ 전체화면';
+  });
 
   db.ref('responses').on('value', (snap) => {
     const all = [];
