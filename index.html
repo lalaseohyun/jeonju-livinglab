@@ -1126,6 +1126,25 @@
     </div>
 
     <div class="admin-card">
+      <h2>📅 일자별 현황</h2>
+      <p style="color:var(--text-mute); font-size:13px; margin-bottom:14px;">보고서 작성용 — 날짜별 응답 수, 평균 만족도, 인기 분과를 한눈에 확인.</p>
+      <div style="overflow-x:auto;">
+        <table id="daily-table" style="width:100%; border-collapse:collapse; font-size:14px;">
+          <thead>
+            <tr style="background:var(--border-soft);">
+              <th style="text-align:left; padding:10px 12px; font-weight:700; border-bottom:2px solid var(--border);">날짜</th>
+              <th style="text-align:right; padding:10px 12px; font-weight:700; border-bottom:2px solid var(--border);">응답 수</th>
+              <th style="text-align:right; padding:10px 12px; font-weight:700; border-bottom:2px solid var(--border);">평균 만족도</th>
+              <th style="text-align:left; padding:10px 12px; font-weight:700; border-bottom:2px solid var(--border);">1위 분과</th>
+            </tr>
+          </thead>
+          <tbody id="daily-tbody"></tbody>
+        </table>
+      </div>
+      <button class="admin-btn secondary" id="daily-csv-btn" style="margin-top:14px;">📊 일자별 CSV 다운로드</button>
+    </div>
+
+    <div class="admin-card">
       <h2>📝 응답 목록</h2>
       <p style="color:var(--text-mute); font-size:13px;">부적절한 응답이 있다면 우측 삭제 버튼으로 숨길 수 있습니다.</p>
       <div class="response-list" id="response-list"></div>
@@ -1598,6 +1617,9 @@ function loadAdminData() {
       document.getElementById('admin-top').textContent = topDiv ? `${topDiv.codename} (${top[1]}표)` : '-';
     }
 
+    // 일자별 현황 (보고서용)
+    renderDailyBreakdown(visible);
+
     // 응답 목록
     const list = document.getElementById('response-list');
     const sorted = [...all].sort((a, b) => b.timestamp - a.timestamp);
@@ -1626,10 +1648,104 @@ function loadAdminData() {
   // CSV 다운로드
   document.getElementById('csv-btn').addEventListener('click', () => downloadCSV());
 
+  // 일자별 CSV 다운로드
+  document.getElementById('daily-csv-btn').addEventListener('click', () => downloadDailyCSV());
+
   // 결과화면 링크 복사
   document.getElementById('copy-link-btn').addEventListener('click', () => {
     const url = window.location.origin + window.location.pathname + '?mode=display';
     navigator.clipboard.writeText(url).then(() => alert('복사됨: ' + url));
+  });
+}
+
+/* ------------------------------------------------------------
+   일자별 통계 — 보고서용
+   ------------------------------------------------------------ */
+function computeDailyBreakdown(responses) {
+  const byDate = {};
+  responses.forEach(r => {
+    if (!r.timestamp) return;
+    const d = new Date(r.timestamp);
+    // 한국 표준시(KST) 기준 날짜 키 — 행사가 국내라 별도 UTC 변환 안 함
+    const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    if (!byDate[key]) byDate[key] = { count: 0, satSum: 0, satCnt: 0, ideaCnt: 0, divCounts: {} };
+    const row = byDate[key];
+    row.count++;
+    if (r.satisfaction) { row.satSum += r.satisfaction; row.satCnt++; }
+    if (r.idea && r.idea.trim()) row.ideaCnt++;
+    if (r.division) row.divCounts[r.division] = (row.divCounts[r.division] || 0) + 1;
+  });
+  return Object.entries(byDate).map(([date, r]) => {
+    const sorted = Object.entries(r.divCounts).sort((a, b) => b[1] - a[1]);
+    const topCode = sorted[0]?.[0];
+    const topDiv = DIVISIONS.find(d => d.code === topCode);
+    return {
+      date,
+      count: r.count,
+      avgSat: r.satCnt ? (r.satSum / r.satCnt).toFixed(2) : '-',
+      ideaCnt: r.ideaCnt,
+      topDivName: topDiv ? topDiv.codename : '-',
+      topDivCount: sorted[0]?.[1] || 0
+    };
+  }).sort((a, b) => a.date.localeCompare(b.date));
+}
+
+function renderDailyBreakdown(visibleResponses) {
+  const rows = computeDailyBreakdown(visibleResponses);
+  const tbody = document.getElementById('daily-tbody');
+  if (!tbody) return;
+  if (!rows.length) {
+    tbody.innerHTML = '<tr><td colspan="4" style="padding:20px; text-align:center; color:var(--text-soft);">아직 응답이 없습니다.</td></tr>';
+    return;
+  }
+  // 본문 행
+  let html = rows.map(r => `
+    <tr style="border-bottom:1px solid var(--border-soft);">
+      <td style="padding:10px 12px; font-weight:600;">${r.date}</td>
+      <td style="padding:10px 12px; text-align:right;"><strong style="color:var(--red); font-size:16px;">${r.count}</strong> 명</td>
+      <td style="padding:10px 12px; text-align:right;">${r.avgSat} ${r.avgSat !== '-' ? '/ 5.0' : ''}</td>
+      <td style="padding:10px 12px;">${r.topDivName} ${r.topDivCount ? `<span style="color:var(--text-soft); font-size:12px;">(${r.topDivCount}표)</span>` : ''}</td>
+    </tr>
+  `).join('');
+  // 합계 행
+  const total = rows.reduce((acc, r) => {
+    acc.count += r.count;
+    if (r.avgSat !== '-') { acc.satSum += parseFloat(r.avgSat) * r.count; acc.satCnt += r.count; }
+    return acc;
+  }, { count: 0, satSum: 0, satCnt: 0 });
+  const totalAvg = total.satCnt ? (total.satSum / total.satCnt).toFixed(2) : '-';
+  html += `
+    <tr style="background:var(--border-soft); font-weight:700;">
+      <td style="padding:12px;">합계 (${rows.length}일간)</td>
+      <td style="padding:12px; text-align:right;"><strong style="color:var(--red); font-size:18px;">${total.count}</strong> 명</td>
+      <td style="padding:12px; text-align:right;">${totalAvg} ${totalAvg !== '-' ? '/ 5.0' : ''}</td>
+      <td style="padding:12px; color:var(--text-mute); font-size:12px;">전체 평균</td>
+    </tr>
+  `;
+  tbody.innerHTML = html;
+}
+
+function downloadDailyCSV() {
+  db.ref('responses').once('value').then(snap => {
+    const visible = [];
+    snap.forEach(c => { const v = c.val(); if (!v.hidden) visible.push(v); });
+    const rows = computeDailyBreakdown(visible);
+    const out = [['날짜', '응답수', '평균만족도', '아이디어응답수', '1위분과', '1위분과표']];
+    let total = 0, satSum = 0, satCnt = 0;
+    rows.forEach(r => {
+      out.push([r.date, r.count, r.avgSat, r.ideaCnt, r.topDivName, r.topDivCount]);
+      total += r.count;
+      if (r.avgSat !== '-') { satSum += parseFloat(r.avgSat) * r.count; satCnt += r.count; }
+    });
+    out.push(['합계', total, satCnt ? (satSum/satCnt).toFixed(2) : '-', '', '', '']);
+    const csv = '﻿' + out.map(r => r.map(c => `"${c}"`).join(',')).join('\n');
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `livinglab_daily_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
   });
 }
 
