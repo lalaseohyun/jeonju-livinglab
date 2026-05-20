@@ -1142,6 +1142,11 @@
         </table>
       </div>
       <button class="admin-btn secondary" id="daily-csv-btn" style="margin-top:14px;">📊 일자별 CSV 다운로드</button>
+      <button class="admin-btn" id="report-pkg-btn" style="margin-top:14px;">📑 Claude/ChatGPT용 보고서 데이터 (.md)</button>
+      <p style="color:var(--text-soft); font-size:12px; margin-top:8px;">
+        통계·일자별·만족도 분포·시간대·분과별 의견·아이디어·한줄평을 하나의 마크다운으로 묶어 다운로드.
+        Claude Chat이나 ChatGPT에 첨부하면 바로 보고서를 써줍니다.
+      </p>
     </div>
 
     <div class="admin-card">
@@ -1651,6 +1656,9 @@ function loadAdminData() {
   // 일자별 CSV 다운로드
   document.getElementById('daily-csv-btn').addEventListener('click', () => downloadDailyCSV());
 
+  // Claude/ChatGPT용 보고서 데이터 패키지 (.md)
+  document.getElementById('report-pkg-btn').addEventListener('click', () => downloadReportPackage());
+
   // 결과화면 링크 복사
   document.getElementById('copy-link-btn').addEventListener('click', () => {
     const url = window.location.origin + window.location.pathname + '?mode=display';
@@ -1723,6 +1731,176 @@ function renderDailyBreakdown(visibleResponses) {
     </tr>
   `;
   tbody.innerHTML = html;
+}
+
+function downloadReportPackage() {
+  db.ref('responses').once('value').then(snap => {
+    const all = [];
+    snap.forEach(c => { const v = c.val(); if (!v.hidden) all.push(v); });
+    all.sort((a, b) => a.timestamp - b.timestamp);
+
+    const total = all.length;
+    const satAvg = total ? (all.reduce((s, r) => s + (r.satisfaction || 0), 0) / total).toFixed(2) : '-';
+    const ideaCount = all.filter(r => r.idea && r.idea.trim()).length;
+    const commentCount = all.filter(r => r.comment && r.comment.trim()).length;
+
+    // 분과별
+    const divStats = {};
+    DIVISIONS.forEach(d => divStats[d.code] = { count: 0, satSum: 0, satCnt: 0 });
+    all.forEach(r => {
+      if (divStats[r.division]) {
+        divStats[r.division].count++;
+        if (r.satisfaction) { divStats[r.division].satSum += r.satisfaction; divStats[r.division].satCnt++; }
+      }
+    });
+    const divRanking = DIVISIONS.map(d => ({
+      ...d,
+      count: divStats[d.code].count,
+      pct: total ? ((divStats[d.code].count / total) * 100).toFixed(1) : 0,
+      avgSat: divStats[d.code].satCnt ? (divStats[d.code].satSum / divStats[d.code].satCnt).toFixed(2) : '-'
+    })).sort((a, b) => b.count - a.count);
+
+    // 만족도 분포
+    const satDist = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+    all.forEach(r => { if (r.satisfaction >= 1 && r.satisfaction <= 5) satDist[r.satisfaction]++; });
+
+    // 일자별
+    const daily = computeDailyBreakdown(all);
+
+    // 시간대별
+    const timeDist = { morning: 0, afternoon: 0, evening: 0 };
+    all.forEach(r => {
+      const h = new Date(r.timestamp).getHours();
+      if (h < 12) timeDist.morning++;
+      else if (h < 18) timeDist.afternoon++;
+      else timeDist.evening++;
+    });
+
+    // 분과별 Q2 응답
+    const reasonsByDiv = {};
+    DIVISIONS.forEach(d => reasonsByDiv[d.code] = []);
+    all.forEach(r => { if (r.reason && reasonsByDiv[r.division]) reasonsByDiv[r.division].push(r); });
+
+    const ideas = all.filter(r => r.idea && r.idea.trim());
+    const comments = all.filter(r => r.comment && r.comment.trim());
+
+    // Markdown 빌드
+    let md = `# 전주 영화의 거리 아이디어 제안소 — 행사 응답 데이터
+
+> 보고서 작성용 데이터 패키지. Claude·ChatGPT 등 LLM에 그대로 첨부하면 보고서를 생성할 수 있도록 구성되어 있습니다.
+> 생성 시각: ${new Date().toLocaleString('ko-KR')}
+
+---
+
+## 행사 개요
+
+전주 영화의 거리 활성화를 위한 리빙랩 프로젝트 성과 전시·홍보 부스에서 운영한 만족도 조사. 부스 방문객이 태블릿 또는 본인 폰(QR 스캔)으로 응답.
+
+### 5개 분과 (제안 아이디어)
+
+| # | 분과명 | 별칭 | 핵심 내용 |
+|---|---|---|---|
+${DIVISIONS.map(d => `| ${d.num} | ${d.title} | ${d.codename} | ${d.desc} |`).join('\n')}
+
+### 설문 문항
+
+- **Q1** (필수, 단일선택): 가장 와닿는 아이디어 — 5개 분과 중 1개 선택
+- **Q2** (필수, 200자): 그 아이디어를 고른 이유
+- **Q3** (선택, 300자): 영화의 거리 활성화를 위한 추가 아이디어
+- **Q4** (필수, 별점 1-5): '아이디어 제안소' 부스 만족도
+- **Q5** (선택, 80자): 한줄평
+
+---
+
+## 📊 핵심 지표 (Headline)
+
+- **총 응답 수**: ${total}명
+- **평균 만족도**: ${satAvg} / 5.0
+- **추가 아이디어 응답수**: ${ideaCount}명 (${total ? ((ideaCount / total) * 100).toFixed(1) : 0}%)
+- **한줄평 응답수**: ${commentCount}명 (${total ? ((commentCount / total) * 100).toFixed(1) : 0}%)
+
+---
+
+## 📅 일자별 응답 현황
+
+| 날짜 | 응답수 | 평균 만족도 | 1위 분과 |
+|---|---:|---:|---|
+${daily.map(r => `| ${r.date} | ${r.count}명 | ${r.avgSat} | ${r.topDivName} (${r.topDivCount}표) |`).join('\n')}
+| **합계 (${daily.length}일간)** | **${daily.reduce((s, r) => s + r.count, 0)}명** | **${satAvg}** | - |
+
+---
+
+## 🏆 분과 인기 순위
+
+| 순위 | 분과 | 별칭 | 표 수 | 점유율 | 분과별 만족도 |
+|---|---|---|---:|---:|---:|
+${divRanking.map((d, i) => `| ${i + 1}위 | ${d.title} | ${d.codename} | ${d.count}표 | ${d.pct}% | ${d.avgSat} |`).join('\n')}
+
+---
+
+## ⭐ 만족도 분포
+
+| 별점 | 응답수 | 비율 |
+|---|---:|---:|
+${[5, 4, 3, 2, 1].map(s => `| ${'★'.repeat(s)}${'☆'.repeat(5 - s)} (${s}점) | ${satDist[s]}명 | ${total ? ((satDist[s] / total) * 100).toFixed(1) : 0}% |`).join('\n')}
+
+---
+
+## ⏰ 시간대별 응답 분포
+
+| 시간대 | 응답수 | 비율 |
+|---|---:|---:|
+| 오전 (00:00~12:00) | ${timeDist.morning}명 | ${total ? ((timeDist.morning / total) * 100).toFixed(1) : 0}% |
+| 오후 (12:00~18:00) | ${timeDist.afternoon}명 | ${total ? ((timeDist.afternoon / total) * 100).toFixed(1) : 0}% |
+| 저녁 (18:00~24:00) | ${timeDist.evening}명 | ${total ? ((timeDist.evening / total) * 100).toFixed(1) : 0}% |
+
+---
+
+## 💬 분과별 응답자 의견 — Q2 "그 아이디어를 고른 이유"
+
+${divRanking.map(d => {
+      const list = reasonsByDiv[d.code];
+      if (!list.length) return `### ${d.title} (${d.codename}) — 0건\n\n_응답 없음_`;
+      return `### ${d.title} (${d.codename}) — ${list.length}건\n\n${list.map(r => `- "${r.reason}" *(★${r.satisfaction})*`).join('\n')}`;
+    }).join('\n\n')}
+
+---
+
+## 💡 추가 아이디어 — Q3 "영화의 거리 활성화를 위한 추가 아이디어"
+
+${ideas.length ? ideas.map(r => {
+      const d = DIVISIONS.find(x => x.code === r.division);
+      return `- **[${d ? d.codename : r.division}]** ${r.idea}`;
+    }).join('\n') : '_응답 없음_'}
+
+---
+
+## ✍️ 한줄평 — Q5 "아이디어 제안소에 대한 짧은 소감"
+
+${comments.length ? comments.map(r => {
+      const d = DIVISIONS.find(x => x.code === r.division);
+      return `- "${r.comment}" *([${d ? d.codename : r.division}] · ★${r.satisfaction})*`;
+    }).join('\n') : '_응답 없음_'}
+
+---
+
+## 📋 원본 응답 데이터
+
+전체 개별 응답(타임스탬프 포함)은 별도 \`livinglab_responses_*.csv\` 파일로 다운로드 가능. 필요 시 함께 첨부.
+
+---
+
+_이 패키지는 https://lalaseohyun.github.io/jeonju-livinglab/?mode=admin 에서 자동 생성됨._
+`;
+
+    const blob = new Blob([md], { type: 'text/markdown;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `livinglab_report_data_${new Date().toISOString().slice(0, 10)}.md`;
+    a.click();
+    URL.revokeObjectURL(url);
+  });
 }
 
 function downloadDailyCSV() {
